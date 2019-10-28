@@ -1,2 +1,2 @@
 # navalbattle
-Jeu C# de bataille navale.
+Jeu de la bataille navale en C#.
