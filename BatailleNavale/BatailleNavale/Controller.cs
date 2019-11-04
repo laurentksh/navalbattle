@@ -10,9 +10,9 @@ namespace BatailleNavale
     {
         public List<ModelBoat> boats = new List<ModelBoat>();
 
-        public void CreateBoat (int x, int y, int size, ModelBoat.Orientation orientation)
+        public void CreateBoat (int x, int y, int size, ModelBoat.Orientation orientation, string name)
         {
-            ModelBoat boat = new ModelBoat(x, y, size, orientation);
+            ModelBoat boat = new ModelBoat(x, y, size, orientation, name);
             boats.Add(boat);
         }
 
