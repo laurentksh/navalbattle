@@ -66,6 +66,7 @@
     <Compile Include="Controller.cs" />
     <Compile Include="ModelBoat.cs" />
     <Compile Include="ModelGrid.cs" />
+    <Compile Include="ModelUser.cs" />
     <Compile Include="View\GameView.xaml.cs">
       <DependentUpon>View\GameView.xaml</DependentUpon>
       <SubType>Code</SubType>
