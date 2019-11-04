@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 
 namespace BatailleNavale
 {
-    class ModelGrid
+    public class ModelGrid
     {
-        private int size { get; set; }
-        private List<ModelBoat> bateaux { get; set; }
-        private List<int> coups { get; set; }
+        public const int SizeX = 10;
+        public const int SizeY = 10;
 
-        public ModelGrid(int size, List<ModelBoat> bateaux, List<int> coups)
+        public List<ModelBoat> bateaux { get; set; }
+        public List<Vector2> coups { get; set; }
+
+        public ModelGrid(List<ModelBoat> bateaux, List<Vector2> coups)
         {
-            this.size = size;
             this.bateaux = bateaux;
             this.coups = coups;
         }

@@ -5,6 +5,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using BatailleNavale.Controller;
+using BatailleNavale.View;
 
 namespace BatailleNavale
 {
@@ -13,5 +15,11 @@ namespace BatailleNavale
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            this.ShutdownMode = ShutdownMode.OnLastWindowClose;
+
+            MainMenuController mainMenuController = new MainMenuController();
+        }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BatailleNavale
 {
-    class ModelBoat
+    public class ModelBoat
     {
         private int x { get; set; }
         private int y { get; set; }
