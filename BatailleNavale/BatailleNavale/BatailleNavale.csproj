@@ -62,12 +62,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\MainMenu.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BoatController.cs" />
     <Compile Include="View\GameView.xaml.cs">
-      <DependentUpon>GameView.xaml</DependentUpon>
+      <DependentUpon>View\GameView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View\MainMenu.xaml">

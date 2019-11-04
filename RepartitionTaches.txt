@@ -1,0 +1,8 @@
+Laurent:
+-GUI (WPF), View, Controller, IA, Multijoueur
+
+Luca:
+-MLD/MCD, Model, Controller
+
+Alexandre:
+-Documentation, Controller, Tests, IA
