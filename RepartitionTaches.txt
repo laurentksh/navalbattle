@@ -6,3 +6,6 @@ Luca:
 
 Alexandre:
 -Documentation, Controller, Tests, IA
+
+Fabrice:
+-Documentation, Tests
