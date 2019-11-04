@@ -64,7 +64,7 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Controller.cs" />
-    <Compile Include="ModelBateau.cs" />
+    <Compile Include="ModelBoat.cs" />
     <Compile Include="ModelGrid.cs" />
     <Compile Include="View\GameView.xaml.cs">
       <DependentUpon>View\GameView.xaml</DependentUpon>

@@ -8,11 +8,17 @@ namespace BatailleNavale
 {
     class Controller
     {
-        List<ModelBateau> bateaux = new List<ModelBateau>();
-        public void createBateau (int x, int y, int size, ModelBateau.Orientation orientation)
+        public List<ModelBoat> boats = new List<ModelBoat>();
+
+        public void CreateBoat (int x, int y, int size, ModelBoat.Orientation orientation)
         {
-            ModelBateau bateau = new ModelBateau(x, y, size, orientation);
-            bateaux.Add(bateau);
+            ModelBoat boat = new ModelBoat(x, y, size, orientation);
+            boats.Add(boat);
+        }
+
+        public void CreateGrid((int, int) grid)
+        {
+
         }
     }
 }
