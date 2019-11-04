@@ -9,10 +9,10 @@ namespace BatailleNavale
     class ModelGrid
     {
         private int size { get; set; }
-        private List<ModelBateau> bateaux { get; set; }
+        private List<ModelBoat> bateaux { get; set; }
         private List<int> coups { get; set; }
 
-        public ModelGrid(int size, List<ModelBateau> bateaux, List<int> coups)
+        public ModelGrid(int size, List<ModelBoat> bateaux, List<int> coups)
         {
             this.size = size;
             this.bateaux = bateaux;

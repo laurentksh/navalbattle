@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace BatailleNavale
 {
-    class ModelBateau
+    class ModelBoat
     {
         private int x { get; set; }
         private int y { get; set; }
         private int size { get; set; }
         private Orientation orientation { get; set; }
 
-        public ModelBateau(int x, int y, int size, Orientation orientation)
+        public ModelBoat(int x, int y, int size, Orientation orientation)
         {
             this.x = x;
             this.y = y;
