@@ -35,7 +35,10 @@ namespace BatailleNavale.Controller
 
         public void ShowSettings()
         {
-            settings = JsonConvert.DeserializeObject<SettingsModel>(File.ReadAllText(SettingsFilePath));
+            if (File.Exists(SettingsFilePath))
+                settings = JsonConvert.DeserializeObject<SettingsModel>(File.ReadAllText(SettingsFilePath));
+            else
+                settings = new SettingsModel();
 
             SettingsView view = new SettingsView(this);
             view.Show();
