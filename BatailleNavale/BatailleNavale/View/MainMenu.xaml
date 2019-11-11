@@ -7,6 +7,10 @@
         mc:Ignorable="d"
         Title="MainMenu" Height="450" Width="800">
     <Grid>
-        
+        <Button Name="SingleplayerBtn" Content="Singleplayer" HorizontalAlignment="Left" Height="47" Margin="299,66,0,0" VerticalAlignment="Top" Width="181" FontSize="20" Click="SingleplayerBtn_Click"/>
+        <Button Name="MultiplayerBtn" Content="Multiplayer" HorizontalAlignment="Left" Height="47" Margin="299,142,0,0" VerticalAlignment="Top" Width="181" FontSize="20" Click="MultiplayerBtn_Click"/>
+        <Button Name="SettingsBtn" Content="Settings" HorizontalAlignment="Left" Height="47" Margin="299,263,0,0" VerticalAlignment="Top" Width="181" FontSize="20" Click="SettingsBtn_Click"/>
+        <Button Name="QuitBtn" Content="Quit" HorizontalAlignment="Left" Height="47" Margin="299,340,0,0" VerticalAlignment="Top" Width="181" FontSize="20" Click="QuitBtn_Click"/>
+
     </Grid>
 </Window>

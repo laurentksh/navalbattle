@@ -63,7 +63,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Controller.cs" />
+    <Compile Include="Controller\GameController.cs" />
+    <Compile Include="Controller\MainMenuController.cs" />
     <Compile Include="ModelBoat.cs" />
     <Compile Include="ModelGrid.cs" />
     <Compile Include="ModelUser.cs" />

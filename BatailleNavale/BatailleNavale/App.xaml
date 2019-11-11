@@ -1,8 +1,8 @@
 ﻿<Application x:Class="BatailleNavale.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:BatailleNavale"
-             StartupUri="View\MainMenu.xaml">
+             xmlns:local="clr-namespace:BatailleNavale">
+    <!--StartupUri="Controller\MainMenuController.cs"-->
     <Application.Resources>
          
     </Application.Resources>

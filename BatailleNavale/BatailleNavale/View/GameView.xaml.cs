@@ -18,22 +18,11 @@ namespace BatailleNavale
     /// <summary>
     /// Logique d'interaction poGur MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class GameWindow : Window
     {
-        public MainWindow()
+        public GameWindow()
         {
             InitializeComponent();
         }
-    }
-
-    class Case
-    {
-        public Vector2 Position;
-    }
-
-    public class Vector2
-    {
-        public int x;
-        public int y;
     }
 }
