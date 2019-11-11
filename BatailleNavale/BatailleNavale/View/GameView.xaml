@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BatailleNavale"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720.679" Width="1213.598">
+        Title="MainWindow" Height="636.679" Width="1000.598">
     <Grid>
-        <Grid Name="GridPlayer" ShowGridLines="True" Height="400" Width="400" Margin="42,46,750,203" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <Grid Name="GridPlayer" ShowGridLines="True" Height="400" Width="400" Margin="42,46,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="65*"></ColumnDefinition>
                 <ColumnDefinition Width="65*"></ColumnDefinition>
@@ -33,7 +33,7 @@
                 <RowDefinition Height="65*"></RowDefinition>
             </Grid.RowDefinitions>
         </Grid>
-        <Grid Name="GridEnemy" ShowGridLines="True" Height="400" Width="400" Margin="521,46,271,203" VerticalAlignment="Top" HorizontalAlignment="Right">
+        <Grid Name="GridEnemy" ShowGridLines="True" Height="400" Width="400" Margin="0,46,34,0" VerticalAlignment="Top" HorizontalAlignment="Right">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="65*"></ColumnDefinition>
                 <ColumnDefinition Width="65*"></ColumnDefinition>
@@ -60,6 +60,5 @@
             </Grid.RowDefinitions>
         </Grid>
         <Button Name="StartBtn" Content="Start" HorizontalAlignment="Left" Margin="42,513,0,0" VerticalAlignment="Top" Width="158" Height="52" FontSize="18"/>
-        <Label Content="A" HorizontalAlignment="Left" Height="25" Margin="42,16,0,0" VerticalAlignment="Top" Width="400"/>
     </Grid>
 </Window>

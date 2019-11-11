@@ -8,19 +8,19 @@ namespace BatailleNavale
 {
     public class ModelBoat
     {
-        private int x { get; set; }
-        private int y { get; set; }
-        private int size { get; set; }
-        private Orientation orientation { get; set; }
-        private string name { get; set; }
+        private int X { get; set; }
+        private int Y { get; set; }
+        private int Size { get; set; }
+        private Orientation Orientation_ { get; set; }
+        private string Name { get; set; }
 
-        public ModelBoat(int x, int y, int size, Orientation orientation, string name)
+        public ModelBoat(int X, int y, int size, Orientation orientation, string name)
         {
-            this.x = x;
-            this.y = y;
-            this.size = size;
-            this.orientation = orientation;
-            this.name = name;
+            this.X = X;
+            this.Y = Y;
+            this.Size = size;
+            this.Orientation_ = orientation;
+            this.Name = name;
         }
 
         public enum Orientation

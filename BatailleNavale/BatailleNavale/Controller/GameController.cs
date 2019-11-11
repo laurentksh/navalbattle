@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BatailleNavale.View;
+using System.Numerics;
 
 namespace BatailleNavale.Controller
 {
@@ -25,7 +26,7 @@ namespace BatailleNavale.Controller
 
         public void CreateBoat (int x, int y, int size, ModelBoat.Orientation orientation)
         {
-            ModelBoat boat = new ModelBoat(x, y, size, orientation);
+            ModelBoat boat = new ModelBoat(x, y, size, orientation, null);
 
             boats.Add(boat);
         }
@@ -33,6 +34,30 @@ namespace BatailleNavale.Controller
         public void GenerateGrid(int boatCount)
         {
 
+        }
+
+        /// <summary>
+        /// Method used by the view to process hits from the player.
+        /// </summary>
+        /// <param name="pos"></param>
+        public void PlayerHit(Vector2 pos)
+        {
+            if (EnemyGrid.HitExists(pos))
+                throw new Exception();
+
+            EnemyGrid.Hits.Add(pos);
+        }
+
+        /// <summary>
+        /// Method used by the AI component to process hits from the AI.
+        /// </summary>
+        /// <param name="pos"></param>
+        public void EnemyHit(Vector2 pos)
+        {
+            if (PlayerGrid.HitExists(pos))
+                throw new Exception();
+
+            PlayerGrid.Hits.Add(pos);
         }
     }
 }
