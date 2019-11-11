@@ -28,11 +28,18 @@ namespace BatailleNavale.View
             InitializeComponent();
 
             controller = controller_;
-        }
 
+            UsernameTB.Text = controller.UserDataModel.Username;
+            HostPortTB.Text = Convert.ToString(controller.UserDataModel.Port);
+
+        }
+        
         private void SettingsBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (controller.SaveSettings(out Exception ex)) {
+            controller.UserDataModel.Username = UsernameTB.Text;
+            controller.UserDataModel.Port = Convert.ToInt32(HostPortTB.Text);
+
+            if (controller.SaveSettings(out Exception ex)) { //Save operation successful
                 MessageBox.Show("Settings saved successfully !", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             } else { //Save operation failed
                 MessageBox.Show("An error occured while saving the settings: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);

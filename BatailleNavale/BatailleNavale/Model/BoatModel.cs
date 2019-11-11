@@ -16,10 +16,10 @@ namespace BatailleNavale.Model
 
         public BoatModel(Vector2 pos, int size, Orientation orientation, string name)
         {
-            this.Position = pos;
-            this.Size = size;
-            this.Orientation_ = orientation;
-            this.Name = name;
+            Position = pos;
+            Size = size;
+            Orientation_ = orientation;
+            Name = name;
         }
 
         public enum Orientation

@@ -17,14 +17,14 @@ namespace BatailleNavale.Controller
         public MainMenu MainMenuView;
         public GameController GameController;
 
-        private UserDataModel userDataModel;
+        public UserDataModel UserDataModel;
 
         public MainMenuController()
         {
             if (File.Exists(UserDataFilePath))
-                userDataModel = JsonConvert.DeserializeObject<UserDataModel>(File.ReadAllText(UserDataFilePath));
+                UserDataModel = JsonConvert.DeserializeObject<UserDataModel>(File.ReadAllText(UserDataFilePath));
             else
-                userDataModel = new UserDataModel();
+                UserDataModel = new UserDataModel();
 
             MainMenuView = new MainMenu(this);
 
@@ -47,7 +47,7 @@ namespace BatailleNavale.Controller
         public bool SaveSettings(out Exception exception)
         {
             try {
-                File.WriteAllText(UserDataFilePath, JsonConvert.SerializeObject(userDataModel));
+                File.WriteAllText(UserDataFilePath, JsonConvert.SerializeObject(UserDataModel));
             } catch (Exception ex) {
                 exception = ex;
                 return false;

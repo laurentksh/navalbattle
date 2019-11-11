@@ -15,8 +15,8 @@ namespace BatailleNavale.Controller
 
         public IAController(GameController controller, IAModel.Difficulty difficulty)
         {
-            this.GameController = controller;
-            this.IAModel = new IAModel(difficulty);
+            GameController = controller;
+            IAModel = new IAModel(difficulty);
         }
 
         /// <summary>

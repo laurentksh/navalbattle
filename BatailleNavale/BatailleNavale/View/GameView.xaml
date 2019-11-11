@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BatailleNavale"
         mc:Ignorable="d"
-        Title="MainWindow" Height="636.679" Width="1000.598">
+        Title="MainWindow" Height="636.679" Width="1000.598" ResizeMode="CanMinimize">
     <Grid>
         <Grid Name="GridPlayer" ShowGridLines="True" Height="400" Width="400" Margin="42,46,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
             <Grid.ColumnDefinitions>

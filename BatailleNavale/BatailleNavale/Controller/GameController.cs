@@ -18,8 +18,8 @@ namespace BatailleNavale.Controller
         public GridModel PlayerGrid;
         public GridModel EnemyGrid;
 
-        public List<BoatModel> PlayerBoats = new List<BoatModel>();
-        public List<BoatModel> EnemyBoats = new List<BoatModel>();
+        public List<BoatModel> PlayerBoats;
+        public List<BoatModel> EnemyBoats;
 
         public GameController(IAModel.Difficulty difficulty)
         {
@@ -27,6 +27,10 @@ namespace BatailleNavale.Controller
             GameView.Show();
 
             IAController = new IAController(this, difficulty);
+            PlayerGrid = new GridModel();
+            EnemyGrid = new GridModel();
+            PlayerBoats = new List<BoatModel>();
+            EnemyBoats = new List<BoatModel>();
         }
 
         /// <summary>

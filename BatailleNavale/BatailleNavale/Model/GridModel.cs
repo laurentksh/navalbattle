@@ -16,12 +16,9 @@ namespace BatailleNavale.Model
         public List<Vector2> Hits { get; set; }
         public State State_ { get; set; }
 
-        public GridModel(List<BoatModel> bateaux, List<Vector2> coups)
+        public GridModel()
         {
-            this.Boats = bateaux;
-            this.Hits = coups;
-
-            this.State_ = State.WarmUp;
+            State_ = State.WarmUp;
         }
 
         public bool HitExists(Vector2 pos)
