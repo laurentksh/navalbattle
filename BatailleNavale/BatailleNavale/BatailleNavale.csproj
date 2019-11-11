@@ -59,7 +59,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model\SettingsModel.cs" />
+    <Compile Include="Model\UserDataModel.cs" />
     <Compile Include="View\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
@@ -67,7 +67,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\MainMenu.xaml">
+    <Page Include="View\MainMenuView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -75,15 +75,13 @@
     <Compile Include="Controller\IAController.cs" />
     <Compile Include="Controller\MainMenuController.cs" />
     <Compile Include="Model\IAModel.cs" />
-    <Compile Include="Model\ModelBoat.cs" />
-    <Compile Include="Model\ModelGrid.cs" />
-    <Compile Include="Model\ModelUser.cs" />
+    <Compile Include="Model\BoatModel.cs" />
+    <Compile Include="Model\GridModel.cs" />
     <Compile Include="View\GameView.xaml.cs">
       <DependentUpon>View\GameView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="View\MainMenu.xaml.cs">
-      <DependentUpon>View\MainMenu.xaml</DependentUpon>
+    <Compile Include="View\MainMenuView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="App.xaml.cs">

@@ -12,15 +12,20 @@ namespace BatailleNavale.Controller
 {
    public class MainMenuController
     {
-        public const string SettingsFilePath = "settings.json";
+        public const string UserDataFilePath = "user.json";
 
         public MainMenu MainMenuView;
         public GameController GameController;
 
-        private SettingsModel settings;
+        private UserDataModel userDataModel;
 
         public MainMenuController()
         {
+            if (File.Exists(UserDataFilePath))
+                userDataModel = JsonConvert.DeserializeObject<UserDataModel>(File.ReadAllText(UserDataFilePath));
+            else
+                userDataModel = new UserDataModel();
+
             MainMenuView = new MainMenu(this);
 
             MainMenuView.Show();
@@ -35,11 +40,6 @@ namespace BatailleNavale.Controller
 
         public void ShowSettings()
         {
-            if (File.Exists(SettingsFilePath))
-                settings = JsonConvert.DeserializeObject<SettingsModel>(File.ReadAllText(SettingsFilePath));
-            else
-                settings = new SettingsModel();
-
             SettingsView view = new SettingsView(this);
             view.Show();
         }
@@ -47,7 +47,7 @@ namespace BatailleNavale.Controller
         public bool SaveSettings(out Exception exception)
         {
             try {
-                File.WriteAllText(SettingsFilePath, JsonConvert.SerializeObject(settings));
+                File.WriteAllText(UserDataFilePath, JsonConvert.SerializeObject(userDataModel));
             } catch (Exception ex) {
                 exception = ex;
                 return false;

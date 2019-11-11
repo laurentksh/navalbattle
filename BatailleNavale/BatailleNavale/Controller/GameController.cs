@@ -15,11 +15,11 @@ namespace BatailleNavale.Controller
 
         public IAController IAController;
 
-        public ModelGrid PlayerGrid;
-        public ModelGrid EnemyGrid;
+        public GridModel PlayerGrid;
+        public GridModel EnemyGrid;
 
-        public List<ModelBoat> PlayerBoats = new List<ModelBoat>();
-        public List<ModelBoat> EnemyBoats = new List<ModelBoat>();
+        public List<BoatModel> PlayerBoats = new List<BoatModel>();
+        public List<BoatModel> EnemyBoats = new List<BoatModel>();
 
         public GameController(IAModel.Difficulty difficulty)
         {
@@ -37,9 +37,9 @@ namespace BatailleNavale.Controller
         /// <param name="size"></param>
         /// <param name="orientation"></param>
         /// <param name="name"></param>
-        public void CreateBoat(bool playerTeam, Vector2 pos, int size, ModelBoat.Orientation orientation, string name = null)
+        public void CreateBoat(bool playerTeam, Vector2 pos, int size, BoatModel.Orientation orientation, string name = null)
         {
-            ModelBoat boat = new ModelBoat(pos, size, orientation, name);
+            BoatModel boat = new BoatModel(pos, size, orientation, name);
 
             if (playerTeam)
                 PlayerBoats.Add(boat);

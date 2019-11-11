@@ -33,7 +33,7 @@ namespace BatailleNavale.Controller
             //IA Logic...
             switch (IAModel.Difficulty_) {
                 case IAModel.Difficulty.None:
-                    target = new Vector2(rng.Next(0, ModelGrid.SizeX), rng.Next(0, ModelGrid.SizeY));
+                    target = new Vector2(rng.Next(0, GridModel.SizeX), rng.Next(0, GridModel.SizeY));
                     break;
                 case IAModel.Difficulty.Easy:
                     break;

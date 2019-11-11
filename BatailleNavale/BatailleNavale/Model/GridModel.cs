@@ -7,16 +7,16 @@ using System.Numerics;
 
 namespace BatailleNavale.Model
 {
-    public class ModelGrid
+    public class GridModel
     {
         public const int SizeX = 10;
         public const int SizeY = 10;
 
-        public List<ModelBoat> Boats { get; set; }
+        public List<BoatModel> Boats { get; set; }
         public List<Vector2> Hits { get; set; }
         public State State_ { get; set; }
 
-        public ModelGrid(List<ModelBoat> bateaux, List<Vector2> coups)
+        public GridModel(List<BoatModel> bateaux, List<Vector2> coups)
         {
             this.Boats = bateaux;
             this.Hits = coups;

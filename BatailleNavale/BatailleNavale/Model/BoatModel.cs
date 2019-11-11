@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace BatailleNavale.Model
 {
-    public class ModelBoat
+    public class BoatModel
     {
         public Vector2 Position { get; set; }
         public int Size { get; set; }
         public Orientation Orientation_ { get; set; }
         public string Name { get; set; }
 
-        public ModelBoat(Vector2 pos, int size, Orientation orientation, string name)
+        public BoatModel(Vector2 pos, int size, Orientation orientation, string name)
         {
             this.Position = pos;
             this.Size = size;
