@@ -32,7 +32,7 @@ namespace BatailleNavale.Controller
 
         public void GenerateGrid(int boatCount)
         {
-            
+
         }
     }
 }

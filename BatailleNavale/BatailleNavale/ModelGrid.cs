@@ -18,6 +18,14 @@ namespace BatailleNavale
         {
             this.bateaux = bateaux;
             this.coups = coups;
+            this.etat = etat;
+        }
+
+        public enum State
+        {
+            WarmUp,
+            InGame,
+            EndGame
         }
     }
 }
