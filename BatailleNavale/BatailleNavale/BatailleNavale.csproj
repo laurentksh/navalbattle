@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Numerics" />
@@ -56,6 +59,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\SettingsModel.cs" />
+    <Compile Include="View\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
     <Page Include="View\GameView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -65,10 +72,12 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Controller\GameController.cs" />
+    <Compile Include="Controller\IAController.cs" />
     <Compile Include="Controller\MainMenuController.cs" />
-    <Compile Include="ModelBoat.cs" />
-    <Compile Include="ModelGrid.cs" />
-    <Compile Include="ModelUser.cs" />
+    <Compile Include="Model\IAModel.cs" />
+    <Compile Include="Model\ModelBoat.cs" />
+    <Compile Include="Model\ModelGrid.cs" />
+    <Compile Include="Model\ModelUser.cs" />
     <Compile Include="View\GameView.xaml.cs">
       <DependentUpon>View\GameView.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -81,6 +90,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -100,6 +113,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

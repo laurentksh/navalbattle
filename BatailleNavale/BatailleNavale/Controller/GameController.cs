@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BatailleNavale.View;
 using System.Numerics;
+using BatailleNavale.Model;
 
 namespace BatailleNavale.Controller
 {
@@ -12,26 +13,41 @@ namespace BatailleNavale.Controller
     {
         public GameWindow GameView { get; private set; }
 
+        public IAController IAController;
+
         public ModelGrid PlayerGrid;
         public ModelGrid EnemyGrid;
 
-        public List<ModelBoat> boats = new List<ModelBoat>();
+        public List<ModelBoat> PlayerBoats = new List<ModelBoat>();
+        public List<ModelBoat> EnemyBoats = new List<ModelBoat>();
 
-        public GameController()
+        public GameController(IAModel.Difficulty difficulty)
         {
             GameView = new GameWindow();
-
             GameView.Show();
+
+            IAController = new IAController(this, difficulty);
         }
 
-        public void CreateBoat (int x, int y, int size, ModelBoat.Orientation orientation)
+        /// <summary>
+        /// Create a new boat and display it on the UI.
+        /// </summary>
+        /// <param name="playerTeam"></param>
+        /// <param name="pos"></param>
+        /// <param name="size"></param>
+        /// <param name="orientation"></param>
+        /// <param name="name"></param>
+        public void CreateBoat(bool playerTeam, Vector2 pos, int size, ModelBoat.Orientation orientation, string name = null)
         {
-            ModelBoat boat = new ModelBoat(x, y, size, orientation, null);
+            ModelBoat boat = new ModelBoat(pos, size, orientation, name);
 
-            boats.Add(boat);
+            if (playerTeam)
+                PlayerBoats.Add(boat);
+            else
+                EnemyBoats.Add(boat);
         }
 
-        public void GenerateGrid(int boatCount)
+        public void GenerateBoats(int boatCount, bool playerTeam)
         {
 
         }
@@ -46,6 +62,8 @@ namespace BatailleNavale.Controller
                 throw new Exception();
 
             EnemyGrid.Hits.Add(pos);
+
+            
         }
 
         /// <summary>

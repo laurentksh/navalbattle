@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
 
-namespace BatailleNavale
+namespace BatailleNavale.Model
 {
     public class ModelGrid
     {

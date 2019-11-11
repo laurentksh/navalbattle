@@ -22,6 +22,8 @@ namespace BatailleNavale.View
     {
         private MainMenuController controller;
 
+        private bool gameSettingsDisplayed = false;
+
         public MainMenu(MainMenuController controller_)
         {
             controller = controller_;
@@ -29,11 +31,25 @@ namespace BatailleNavale.View
             InitializeComponent();
 
             MultiplayerBtn.IsEnabled = false;
+            GameSettingsGB.Visibility = Visibility.Hidden;
+
+            foreach (string item in Enum.GetNames(typeof(Model.IAModel.Difficulty)))
+                DifficultyCB.Items.Add(item);
+
+            if (DifficultyCB.Items.Count > 0)
+                DifficultyCB.SelectedIndex = 0;
         }
 
         private void SingleplayerBtn_Click(object sender, RoutedEventArgs e)
         {
-            controller.NewGame(MainMenuController.GameMode.Singleplayer);
+            if (gameSettingsDisplayed) {
+                gameSettingsDisplayed = false;
+                GameSettingsGB.Visibility = Visibility.Hidden;
+                controller.NewGame(MainMenuController.GameMode.Singleplayer, (Model.IAModel.Difficulty)DifficultyCB.SelectedIndex);
+            } else {
+                gameSettingsDisplayed = true;
+                GameSettingsGB.Visibility = Visibility.Visible;
+            }
         }
 
         private void MultiplayerBtn_Click(object sender, RoutedEventArgs e)
@@ -43,7 +59,7 @@ namespace BatailleNavale.View
 
         private void SettingsBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            controller.ShowSettings();
         }
 
         private void QuitBtn_Click(object sender, RoutedEventArgs e)
