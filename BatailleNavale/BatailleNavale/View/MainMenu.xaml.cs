@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BatailleNavale.Controller;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,35 @@ namespace BatailleNavale.View
     /// </summary>
     public partial class MainMenu : Window
     {
-        public MainMenu()
+        private MainMenuController controller;
+
+        public MainMenu(MainMenuController controller_)
         {
+            controller = controller_;
+
             InitializeComponent();
+
+            MultiplayerBtn.IsEnabled = false;
+        }
+
+        private void SingleplayerBtn_Click(object sender, RoutedEventArgs e)
+        {
+            controller.NewGame(MainMenuController.GameMode.Singleplayer);
+        }
+
+        private void MultiplayerBtn_Click(object sender, RoutedEventArgs e)
+        {
+            controller.NewGame(MainMenuController.GameMode.Multiplayer);
+        }
+
+        private void SettingsBtn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void QuitBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown(0);
         }
     }
 }
