@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using BatailleNavale.View;
 using BatailleNavale.Model;
 using System.IO;
-using Newtonsoft.Json;
+using System.Windows;
 
 namespace BatailleNavale.Controller
 {
@@ -22,9 +22,15 @@ namespace BatailleNavale.Controller
         public MainMenuController()
         {
             if (File.Exists(UserDataFilePath))
-                UserDataModel = JsonConvert.DeserializeObject<UserDataModel>(File.ReadAllText(UserDataFilePath));
-            else
+                try {
+                    UserDataModel = UserDataLoader.Load(UserDataFilePath);
+                } catch (Exception) {
+                    MessageBox.Show("An error occured while loading the user data.");
+                    ResetSettings();
+                }
+            else {
                 UserDataModel = new UserDataModel();
+            }
 
             MainMenuView = new MainMenu(this);
 
@@ -38,6 +44,17 @@ namespace BatailleNavale.Controller
             GameController.GenerateBoats(5, false);
         }
 
+        /// <summary>
+        /// Reset the user settings/data.
+        /// </summary>
+        /// <param name="fileExists">If true, will act like the user is using this app for the first time.</param>
+        public void ResetSettings(bool fileExists = false)
+        {
+            UserDataModel = new UserDataModel();
+
+
+        }
+
         public void ShowSettings()
         {
             SettingsView view = new SettingsView(this);
@@ -47,7 +64,7 @@ namespace BatailleNavale.Controller
         public bool SaveSettings(out Exception exception)
         {
             try {
-                File.WriteAllText(UserDataFilePath, JsonConvert.SerializeObject(UserDataModel));
+                UserDataLoader.Save(UserDataFilePath, UserDataModel);
             } catch (Exception ex) {
                 exception = ex;
                 return false;
@@ -55,6 +72,12 @@ namespace BatailleNavale.Controller
 
             exception = null;
             return true;
+        }
+
+        public void Close()
+        {
+            SaveSettings(out _);
+            Application.Current.Shutdown(0);
         }
 
         public enum GameMode

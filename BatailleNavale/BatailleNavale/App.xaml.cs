@@ -17,7 +17,7 @@ namespace BatailleNavale
     {
         public App()
         {
-            ShutdownMode = ShutdownMode.OnLastWindowClose;
+            ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
             MainMenuController mainMenuController = new MainMenuController();
         }

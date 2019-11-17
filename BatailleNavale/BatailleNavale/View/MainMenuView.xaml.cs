@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
@@ -21,8 +22,8 @@ namespace BatailleNavale.View
     public partial class MainMenu : Window
     {
         private MainMenuController controller;
-
         private bool gameSettingsDisplayed = false;
+        private Storyboard storyboard = new Storyboard();
 
         public MainMenu(MainMenuController controller_)
         {
@@ -49,6 +50,17 @@ namespace BatailleNavale.View
             } else {
                 gameSettingsDisplayed = true;
                 GameSettingsGB.Visibility = Visibility.Visible;
+
+                DoubleAnimation da = new DoubleAnimation();
+                da.From = 1.0;
+                da.To = 0.3;
+                da.RepeatBehavior = RepeatBehavior.Forever;
+                da.AutoReverse = true;
+
+                storyboard.Children.Add(da);
+                Storyboard.SetTargetProperty(da, new PropertyPath("(Button.Opacity)"));
+                Storyboard.SetTarget(da, SingleplayerBtn);
+                storyboard.Begin();
             }
         }
 
@@ -64,7 +76,12 @@ namespace BatailleNavale.View
 
         private void QuitBtn_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown(0);
+            controller.Close();
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            controller.Close();
         }
     }
 }

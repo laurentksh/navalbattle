@@ -3,12 +3,13 @@ using System.Numerics;
 using BatailleNavale.Controller;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace BatailleNavaleTest.Controllers
+namespace BatailleNavaleTest.Controller
 {
     [TestClass]
     public class GameControllerTest
     {
         GameController controller = new GameController(BatailleNavale.Model.IAModel.Difficulty.None);
+
         [TestMethod]
         public void CreateBoatTest()
         {

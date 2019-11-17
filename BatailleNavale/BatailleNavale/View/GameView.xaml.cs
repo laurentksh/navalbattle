@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BatailleNavale.Controller;
 
 namespace BatailleNavale
 {
@@ -20,9 +21,18 @@ namespace BatailleNavale
     /// </summary>
     public partial class GameWindow : Window
     {
-        public GameWindow()
+        private GameController controller;
+
+        public GameWindow(GameController controller_)
         {
+            controller = controller_;
+
             InitializeComponent();
+        }
+
+        private void ReadyBtn_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BatailleNavale.View"
         mc:Ignorable="d"
-        Title="MainMenu" Height="450" Width="800">
+        Title="MainMenu" Height="450" Width="800"
+        Closed="Window_Closed">
     <Grid>
         <Button Name="SingleplayerBtn" Content="Singleplayer" HorizontalAlignment="Left" Height="47" Margin="299,66,0,0" VerticalAlignment="Top" Width="181" FontSize="20" Click="SingleplayerBtn_Click"/>
         <Button Name="MultiplayerBtn" Content="Multiplayer" HorizontalAlignment="Left" Height="47" Margin="299,142,0,0" VerticalAlignment="Top" Width="181" FontSize="20" Click="MultiplayerBtn_Click"/>

@@ -9,6 +9,8 @@ namespace BatailleNavale.Model
 {
     public class BoatModel
     {
+        public const int MaxSize = 4;
+
         public Vector2 Position { get; set; }
         public int Size { get; set; }
         public Orientation Orientation_ { get; set; }

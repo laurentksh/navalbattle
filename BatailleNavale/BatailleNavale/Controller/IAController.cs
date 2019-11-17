@@ -33,15 +33,13 @@ namespace BatailleNavale.Controller
             //IA Logic...
             switch (IAModel.Difficulty_) {
                 case IAModel.Difficulty.None:
-                    do
-                    {
+                    do {
                         target = new Vector2(rng.Next(0, GridModel.SizeX), rng.Next(0, GridModel.SizeY));
                     } while (GameController.PlayerGrid.HitExists(target));
                     break;
                 case IAModel.Difficulty.Easy:
-                    if (GameController.PlayerGrid.BoatExists(latesthit))
-                    {
-                        target = new Vector2(latestHit.X + 1, latestHit.Y);
+                    if (GameController.PlayerGrid.BoatExists(latestHit)) {
+                        target = new Vector2(latestHit.X + 1, latestHit.Y); //Needs improvement
                     }
                     break;
                 case IAModel.Difficulty.Normal:

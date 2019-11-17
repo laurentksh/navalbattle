@@ -3,7 +3,7 @@ using BatailleNavale.Controller;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static BatailleNavale.Controller.MainMenuController;
 
-namespace BatailleNavaleTest.Controllers
+namespace BatailleNavaleTest.Controller
 {
     [TestClass]
     public class MainMenuControllerTest
@@ -25,7 +25,7 @@ namespace BatailleNavaleTest.Controllers
         [TestMethod]
         public void SaveSettingsTest()
         {
-            controller.ShowSettings();
+            Assert.IsTrue(controller.SaveSettings(out _));
         }
     }
 }

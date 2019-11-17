@@ -18,7 +18,26 @@ namespace BatailleNavale.Model
 
         public GridModel()
         {
+            Boats = new List<BoatModel>();
+            Hits = new List<Vector2>();
             State_ = State.WarmUp;
+        }
+
+        public bool BoatExists(Vector2 pos)
+        {
+            foreach (BoatModel boat in Boats) {
+                for (int i = 0; i < boat.Size; i++) {
+                    if (boat.Orientation_ == BoatModel.Orientation.Horizontal) {
+                        if ((boat.Position.X + i) == pos.X)
+                            return true;
+                    } else {
+                        if ((boat.Position.Y + i) == pos.Y)
+                            return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         public bool HitExists(Vector2 pos)

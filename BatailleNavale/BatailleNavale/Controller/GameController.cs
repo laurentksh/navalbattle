@@ -23,7 +23,7 @@ namespace BatailleNavale.Controller
 
         public GameController(IAModel.Difficulty difficulty)
         {
-            GameView = new GameWindow();
+            GameView = new GameWindow(this);
             GameView.Show();
 
             IAController = new IAController(this, difficulty);
