@@ -44,9 +44,9 @@ namespace BatailleNavale.Controller
         /// <param name="size"></param>
         /// <param name="orientation"></param>
         /// <param name="name"></param>
-        public void CreateBoat(bool playerTeam, Vector2 pos, int size, BoatModel.Orientation orientation, string name = null)
+        public void CreateBoat(bool playerTeam, Vector2 pos, int size, BoatModel.Orientation orientation)
         {
-            BoatModel boat = new BoatModel(pos, size, orientation, name);
+            BoatModel boat = new BoatModel(pos, size, orientation);
 
             if (playerTeam)
                 PlayerBoats.Add(boat);
@@ -60,16 +60,19 @@ namespace BatailleNavale.Controller
         /// Generate boats for the local player.
         /// </summary>
         /// <param name="boatCount"></param>
-        public void GenerateBoats(int boatCount)
+        public void GenerateBoats()
         {
             List<Vector2> usedPositions = new List<Vector2>();
             Random rnd = new Random();
             Vector2 pos;
             int size;
             BoatModel.Orientation orientation;
+            BoatPresets boatPreset;
+            List<BoatPresets> boatPresets = BoatModel.GetBoatPresets();
 
-            for (int i = 0; i < boatCount; i++) { //Random boat generation for now, will change later.
-                size = rnd.Next(BoatModel.MaxSize);
+            for (int i = 0; i < boatPresets.Count; i++) { //Random boat generation for now, will change later.
+                boatPreset = boatPresets[i];
+                size = boatPreset.boatSize;
                 orientation = (BoatModel.Orientation)rnd.Next(1);
 
                 do {
@@ -83,7 +86,7 @@ namespace BatailleNavale.Controller
                         usedPositions.Add(new Vector2(pos.X, pos.Y + i2));
                 }
 
-                CreateBoat(true, pos, size, orientation, null);
+                CreateBoat(true, pos, size, orientation);
             }
         }
 

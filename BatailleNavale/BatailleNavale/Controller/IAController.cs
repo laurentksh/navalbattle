@@ -70,7 +70,7 @@ namespace BatailleNavale.Controller
 
                 usedPositions.Add(pos);
 
-                GameController.CreateBoat(false, pos, rnd.Next(BoatModel.MaxSize), (BoatModel.Orientation)rnd.Next(1), null);
+                GameController.CreateBoat(false, pos, rnd.Next(BoatModel.MaxSize), (BoatModel.Orientation)rnd.Next(1));
             }
         }
     }

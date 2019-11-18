@@ -13,18 +13,16 @@ namespace BatailleNavale.Model
     {
         public const int MaxSize = 4;
 
-        public string Name { get; set; }
-        public Vector2 Position { get; set; }
+         public Vector2 Position { get; set; }
         public int Size { get; set; }
         public Orientation Orientation_ { get; set; }
         public int BoatTypeId { get; set; }
 
-        public BoatModel(Vector2 pos, int size, Orientation orientation, string name)
+        public BoatModel(Vector2 pos, int size, Orientation orientation)
         {
             Position = pos;
             Size = size;
             Orientation_ = orientation;
-            Name = name;
         }
 
         /// <summary>
@@ -40,10 +38,57 @@ namespace BatailleNavale.Model
             }
         }
 
+        public static List<BoatPresets> GetBoatPresets()
+        {
+            List<BoatPresets> boatPresets = new List<BoatPresets>();
+
+            boatPresets.Add(new BoatPresets
+            {
+                boatId = 0,
+                boatSize = 2
+
+            });
+            boatPresets.Add(new BoatPresets
+            {
+                boatId = 1,
+                boatSize = 3
+
+            });
+            boatPresets.Add(new BoatPresets
+            {
+                boatId = 2,
+                boatSize = 3
+
+            });
+            boatPresets.Add(new BoatPresets
+            {
+                boatId = 3,
+                boatSize = 4
+
+            });
+            boatPresets.Add(new BoatPresets
+            {
+                boatId = 4,
+                boatSize = 5
+
+            });
+
+
+            return boatPresets;
+
+
+        }
+
         public enum Orientation
         {
             Horizontal,
             Vertical
         }
+    }
+
+    public struct BoatPresets
+    {
+        public int boatId;
+        public int boatSize;
     }
 }

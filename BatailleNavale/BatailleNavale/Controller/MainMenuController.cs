@@ -43,7 +43,7 @@ namespace BatailleNavale.Controller
                 SingleplayerGameController gameController = new SingleplayerGameController(settings.Difficulty);
                 GameController = gameController;
 
-                gameController.GenerateBoats(settings.BoatCount);
+                gameController.GenerateBoats();
                 gameController.IAController.GenerateBoats(settings.BoatCount);
             } else {
 
