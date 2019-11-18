@@ -19,7 +19,7 @@ namespace BatailleNavaleTest.Controller
         [TestMethod]
         public void GenerateBoatsTest()
         {
-            controller.GenerateBoats(5);
+            controller.GenerateBoats();
             controller.IAController.GenerateBoats(5);
         }
 
