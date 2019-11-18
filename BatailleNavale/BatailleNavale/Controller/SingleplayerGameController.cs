@@ -18,7 +18,7 @@ namespace BatailleNavale.Controller
 
         public GridModel PlayerGrid { get; set; }
         public GridModel EnemyGrid { get; set; }
-        
+
 
         public List<BoatModel> PlayerBoats;
         public List<BoatModel> EnemyBoats;
@@ -44,11 +44,11 @@ namespace BatailleNavale.Controller
         /// <param name="size"></param>
         /// <param name="orientation"></param>
         /// <param name="name"></param>
-        public void CreateBoat(bool playerTeam, Vector2 pos, int size, BoatModel.Orientation orientation)
+        public void CreateBoat(Player playerTeam, Vector2 pos, int size, BoatModel.Orientation orientation)
         {
             BoatModel boat = new BoatModel(pos, size, orientation);
 
-            if (playerTeam)
+            if (playerTeam == Player.Player1)
                 PlayerBoats.Add(boat);
             else
                 EnemyBoats.Add(boat);
@@ -86,7 +86,7 @@ namespace BatailleNavale.Controller
                         usedPositions.Add(new Vector2(pos.X, pos.Y + i2));
                 }
 
-                CreateBoat(true, pos, size, orientation);
+                CreateBoat(Player.Player1, pos, size, orientation);
             }
         }
 
@@ -104,20 +104,20 @@ namespace BatailleNavale.Controller
 
             switch (GameState) {
                 case GameState.PlayersChooseBoatsLayout:
-                    GameView.SetGridIsEnabled(true, true);
-                    GameView.SetGridIsEnabled(false, false);
+                    GameView.SetGridIsEnabled(Player.Player1, true);
+                    GameView.SetGridIsEnabled(Player.Player2, false);
                     break;
                 case GameState.Player1Turn:
-                    GameView.SetGridIsEnabled(true, false);
-                    GameView.SetGridIsEnabled(false, true);
+                    GameView.SetGridIsEnabled(Player.Player1, false);
+                    GameView.SetGridIsEnabled(Player.Player2, true);
                     break;
                 case GameState.Player2Turn:
-                    GameView.SetGridIsEnabled(true, true);
-                    GameView.SetGridIsEnabled(false, false);
+                    GameView.SetGridIsEnabled(Player.Player1, true);
+                    GameView.SetGridIsEnabled(Player.Player2, false);
                     break;
                 case GameState.GameEnded:
-                    GameView.SetGridIsEnabled(true, false);
-                    GameView.SetGridIsEnabled(false, false);
+                    GameView.SetGridIsEnabled(Player.Player1, false);
+                    GameView.SetGridIsEnabled(Player.Player2, false);
                     break;
                 default:
                     break;
@@ -126,56 +126,117 @@ namespace BatailleNavale.Controller
 
         public async void ProcessPlayerHit(Vector2 pos)
         {
+            Player winner = Player.None;
+
             try {
-                PlayerHit(pos);
+                PlayerHit(pos, out winner);
             } catch (Exception) {
                 return;
             }
 
-            GameView.DisplayHit(pos, true);
+            if (winner != Player.None)
+                return;
+
+            GameView.DisplayHit(pos, Player.Player2); //Add a hitmarker
+
+            GameView.SetGridIsEnabled(Player.Player1, true);
+            GameView.SetGridIsEnabled(Player.Player2, false);
 
             Random rnd = new Random();
 
             await Task.Delay(rnd.Next(1000, 4000)); //Fake that the AI is processing the next hit.
+
+            ChangeGameState(GameState.Player2Turn);
 
             ProcessIAHit(IAController.GetNextTarget());
         }
 
         public async void ProcessIAHit(Vector2 pos)
         {
+            Player winner = Player.None;
+
             try {
-                EnemyHit(pos);
+                EnemyHit(pos, out winner);
             } catch (Exception) {
                 return;
             }
 
-            GameView.DisplayHit(pos, false);
+            if (winner != Player.None)
+                return;
+
+            GameView.DisplayHit(pos, Player.Player1);
 
             await Task.Delay(2000);
+
+            ChangeGameState(GameState.Player1Turn);
+        }
+
+        public void GameWon(Player player)
+        {
+            ChangeGameState(GameState.GameEnded);
+            GameView.SetllBoatsForPlayerVisibility(true, Player.Player2);
+
+            GameView.GameWonLbl.Content = $"{player} won !";
+            GameView.GameWonLbl.Visibility = System.Windows.Visibility.Visible;
+        }
+
+        public bool IsGameWon(out Player who)
+        {
+            bool gameWon = false;
+            who = Player.None;
+
+            int playerDestroyedBoats = PlayerGrid.GetDestroyedBoats().Count;
+            int enemyDestroyedBoats = EnemyGrid.GetDestroyedBoats().Count;
+
+            if (playerDestroyedBoats == PlayerBoats.Count) {
+                who = Player.Player1;
+                gameWon = true;
+            }
+
+            if (enemyDestroyedBoats == EnemyBoats.Count) {
+                who = Player.Player2;
+                gameWon = true;
+            }
+
+            return gameWon;
         }
 
         /// <summary>
         /// Method used by the view to process hits from the player.
         /// </summary>
         /// <param name="pos"></param>
-        public void PlayerHit(Vector2 pos)
+        public void PlayerHit(Vector2 pos, out Player won)
         {
+            won = Player.None;
+
             if (EnemyGrid.HitExists(pos))
                 throw new Exception();
 
             EnemyGrid.Hits.Add(pos);
+
+            if (IsGameWon(out Player player)) {
+                won = player;
+                GameWon(player);
+            }
         }
 
         /// <summary>
         /// Method used by the AI component to process hits from the AI.
         /// </summary>
         /// <param name="pos"></param>
-        public void EnemyHit(Vector2 pos)
+        public void EnemyHit(Vector2 pos, out Player won)
         {
+            won = Player.None;
+
             if (PlayerGrid.HitExists(pos))
                 throw new Exception();
 
             PlayerGrid.Hits.Add(pos);
+
+            if (IsGameWon(out Player player)) {
+                won = player;
+                GameWon(player);
+            }
         }
     }
 }

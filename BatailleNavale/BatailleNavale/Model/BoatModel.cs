@@ -13,7 +13,7 @@ namespace BatailleNavale.Model
     {
         public const int MaxSize = 4;
 
-         public Vector2 Position { get; set; }
+        public Vector2 Position { get; set; }
         public int Size { get; set; }
         public Orientation Orientation_ { get; set; }
         public int BoatTypeId { get; set; }
@@ -23,6 +23,25 @@ namespace BatailleNavale.Model
             Position = pos;
             Size = size;
             Orientation_ = orientation;
+        }
+
+        public int GetDestroyedCases(List<Vector2> hits)
+        {
+            int hitsCount = 0;
+
+            for (int i = 0; i < Size; i++) {
+                Vector2 v = Vector2.Zero;
+
+                if (Orientation_ == BoatModel.Orientation.Horizontal)
+                    v = new Vector2(Position.X + i, Position.Y);
+                else
+                    v = new Vector2(Position.X, Position.Y);
+
+                if (hits.Contains(v))
+                    hitsCount++;
+            }
+
+            return hitsCount;
         }
 
         /// <summary>
