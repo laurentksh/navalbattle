@@ -37,11 +37,11 @@ namespace BatailleNavale.Controller
                     default:
                     case IAModel.Difficulty.None:
                     case IAModel.Difficulty.Easy:
-                        target = new Vector2(rng.Next(0, GridModel.SizeX - 1), rng.Next(0, GridModel.SizeY - 1));
+                        target = new Vector2(rng.Next(0, GridModel.SizeX), rng.Next(0, GridModel.SizeY));
                         break;
                     case IAModel.Difficulty.Normal:
                     case IAModel.Difficulty.Hard:
-                        target = new Vector2(rng.Next(3, GridModel.SizeX - 4), rng.Next(3, GridModel.SizeY - 4));
+                        target = new Vector2(rng.Next(3, GridModel.SizeX - 3), rng.Next(3, GridModel.SizeY - 3));
                         break;
                 }
                 
@@ -56,7 +56,7 @@ namespace BatailleNavale.Controller
                 default:
                 case IAModel.Difficulty.None:
                     do {
-                        target = new Vector2(rng.Next(0, GridModel.SizeX - 1), rng.Next(0, GridModel.SizeY - 1));
+                        target = new Vector2(rng.Next(0, GridModel.SizeX), rng.Next(0, GridModel.SizeY));
                     } while (GameController.PlayerGrid.HitExists(target));
                     break;
                 case IAModel.Difficulty.Easy:
