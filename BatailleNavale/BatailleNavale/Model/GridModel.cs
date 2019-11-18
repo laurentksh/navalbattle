@@ -14,13 +14,11 @@ namespace BatailleNavale.Model
 
         public List<BoatModel> Boats { get; set; }
         public List<Vector2> Hits { get; set; }
-        public State State_ { get; set; }
 
         public GridModel()
         {
             Boats = new List<BoatModel>();
             Hits = new List<Vector2>();
-            State_ = State.Disabled;
         }
 
         public bool BoatExists(Vector2 pos)
@@ -50,11 +48,18 @@ namespace BatailleNavale.Model
             return false;
         }
 
-        public enum State
+        public List<BoatModel> GetDestroyedBoats()
         {
-            EditBoats,
-            Enabled,
-            Disabled,
+            List<BoatModel> destroyedBoats = new List<BoatModel>();
+
+            foreach (BoatModel boat in this.Boats) {
+                int hits = boat.GetDestroyedCases(this.Hits);
+
+                if (hits == boat.Size)
+                    destroyedBoats.Add(boat);
+            }
+
+            return destroyedBoats;
         }
     }
 }

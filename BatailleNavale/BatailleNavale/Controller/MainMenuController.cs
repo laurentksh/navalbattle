@@ -46,7 +46,7 @@ namespace BatailleNavale.Controller
                 gameController.GenerateBoats();
                 gameController.IAController.GenerateBoats(settings.BoatCount);
             } else {
-
+                //TODO: Make a MultiplayerClientGameController and MultiplayerHostGameController.
             }
         }
 

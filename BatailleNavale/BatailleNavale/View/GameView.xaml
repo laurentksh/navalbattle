@@ -60,5 +60,6 @@
             </Grid.RowDefinitions>
         </Grid>
         <Button Name="ReadyBtn" Content="Ready" HorizontalAlignment="Left" Margin="42,513,0,0" VerticalAlignment="Top" Width="158" Height="52" FontSize="18" Click="ReadyBtn_Click"/>
+        <Label Name="GameWonLbl" Visibility="Hidden" Content="&lt;Player&gt; won !" HorizontalAlignment="Center" Height="65" Margin="300,480,300,51" VerticalAlignment="Center" Width="417" Panel.ZIndex="1000" FontSize="48"/>
     </Grid>
 </Window>
