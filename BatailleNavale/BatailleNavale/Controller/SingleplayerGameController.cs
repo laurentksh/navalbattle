@@ -95,7 +95,33 @@ namespace BatailleNavale.Controller
         /// </summary>
         public void SetReady()
         {
-            GameState = GameState.Player1Turn;
+            ChangeGameState(GameState.Player1Turn);
+        }
+
+        public void ChangeGameState(GameState state)
+        {
+            GameState = state;
+
+            switch (GameState) {
+                case GameState.PlayersChooseBoatsLayout:
+                    GameView.SetGridIsEnabled(true, true);
+                    GameView.SetGridIsEnabled(false, false);
+                    break;
+                case GameState.Player1Turn:
+                    GameView.SetGridIsEnabled(true, false);
+                    GameView.SetGridIsEnabled(false, true);
+                    break;
+                case GameState.Player2Turn:
+                    GameView.SetGridIsEnabled(true, true);
+                    GameView.SetGridIsEnabled(false, false);
+                    break;
+                case GameState.GameEnded:
+                    GameView.SetGridIsEnabled(true, false);
+                    GameView.SetGridIsEnabled(false, false);
+                    break;
+                default:
+                    break;
+            }
         }
 
         public async void ProcessPlayerHit(Vector2 pos)
@@ -103,8 +129,10 @@ namespace BatailleNavale.Controller
             try {
                 PlayerHit(pos);
             } catch (Exception) {
-
+                return;
             }
+
+            GameView.DisplayHit(pos, true);
 
             Random rnd = new Random();
 
@@ -113,13 +141,17 @@ namespace BatailleNavale.Controller
             ProcessIAHit(IAController.GetNextTarget());
         }
 
-        public void ProcessIAHit(Vector2 pos)
+        public async void ProcessIAHit(Vector2 pos)
         {
             try {
                 EnemyHit(pos);
             } catch (Exception) {
-
+                return;
             }
+
+            GameView.DisplayHit(pos, false);
+
+            await Task.Delay(2000);
         }
 
         /// <summary>

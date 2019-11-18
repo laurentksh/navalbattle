@@ -34,7 +34,9 @@ namespace BatailleNavale.Model
         {
             switch (typeId) {
                 default:
-                    return new BitmapImage(new Uri("./Resources/BoatDefault.png", UriKind.RelativeOrAbsolute));
+                    return new BitmapImage(new Uri($"./Resources/BoatImages/Boat{typeId}.png", UriKind.RelativeOrAbsolute));
+                case -1:
+                    return new BitmapImage(new Uri("./Resources/BoatImages/BoatDefault.png", UriKind.RelativeOrAbsolute));
             }
         }
 

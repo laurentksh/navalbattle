@@ -26,20 +26,25 @@ namespace BatailleNavale.Controller
         public Vector2 GetNextTarget()
         {
             Vector2 target = Vector2.Zero;
+            Random rng = new Random();
+
+            if (GameController.PlayerGrid.Hits.Count == 0) {
+                target = new Vector2(rng.Next(0, GridModel.SizeX -1), rng.Next(0, GridModel.SizeY - 1));
+                return target;
+            }
 
             Vector2 latestHit = GameController.PlayerGrid.Hits.Last();
-            Random rng = new Random();
 
             //IA Logic...
             switch (IAModel.Difficulty_) {
                 case IAModel.Difficulty.None:
                     do {
-                        target = new Vector2(rng.Next(0, GridModel.SizeX), rng.Next(0, GridModel.SizeY));
+                        target = new Vector2(rng.Next(0, GridModel.SizeX - 1), rng.Next(0, GridModel.SizeY - 1));
                     } while (GameController.PlayerGrid.HitExists(target));
                     break;
                 case IAModel.Difficulty.Easy:
                     if (GameController.PlayerGrid.BoatExists(latestHit)) {
-                        target = new Vector2(latestHit.X + 1, latestHit.Y); //Needs improvement
+                        target = new Vector2(latestHit.X + 1, latestHit.Y); //TODO: Needs improvement
                     }
                     break;
                 case IAModel.Difficulty.Normal:

@@ -18,6 +18,7 @@ namespace BatailleNavale.Controller
         GridModel EnemyGrid { get; set; }
 
         void SetReady();
+        void ProcessPlayerHit(Vector2 pos);
         void PlayerHit(Vector2 pos);
         void EnemyHit(Vector2 pos);
 
