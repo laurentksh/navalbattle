@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\GameControllerTest.cs" />
+    <Compile Include="Controllers\IAControllerTest.cs" />
     <Compile Include="Controllers\MainMenuControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
