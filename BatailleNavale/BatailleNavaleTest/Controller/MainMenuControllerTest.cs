@@ -3,7 +3,7 @@ using BatailleNavale.Controller;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static BatailleNavale.Controller.MainMenuController;
 
-namespace BatailleNavaleTest.Controllers
+namespace BatailleNavaleTest.Controller
 {
     [TestClass]
     public class MainMenuControllerTest
@@ -13,7 +13,14 @@ namespace BatailleNavaleTest.Controllers
         [TestMethod]
         public void NewGameTest()
         {
-            controller.NewGame(GameMode.Singleplayer);
+            GameSettings settings = new GameSettings
+            {
+                GameMode = GameMode.Singleplayer,
+                BoatCount = 5,
+                Difficulty = BatailleNavale.Model.IAModel.Difficulty.None
+            };
+
+            controller.NewGame(settings);
         }
 
         [TestMethod]
@@ -25,7 +32,7 @@ namespace BatailleNavaleTest.Controllers
         [TestMethod]
         public void SaveSettingsTest()
         {
-            controller.ShowSettings();
+            Assert.IsTrue(controller.SaveSettings(out _));
         }
     }
 }

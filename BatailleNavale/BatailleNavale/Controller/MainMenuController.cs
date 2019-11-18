@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using BatailleNavale.View;
 using BatailleNavale.Model;
 using System.IO;
-using Newtonsoft.Json;
+using System.Windows;
 
 namespace BatailleNavale.Controller
 {
@@ -14,40 +14,66 @@ namespace BatailleNavale.Controller
     {
         public const string UserDataFilePath = "user.json";
 
-        public MainMenu MainMenuView;
-        public GameController GameController;
+        public MainMenuWindow MainMenuView;
+        public IGameController GameController;
 
-        private UserDataModel userDataModel;
+        public UserDataModel UserDataModel;
 
         public MainMenuController()
         {
             if (File.Exists(UserDataFilePath))
-                userDataModel = JsonConvert.DeserializeObject<UserDataModel>(File.ReadAllText(UserDataFilePath));
-            else
-                userDataModel = new UserDataModel();
+                try {
+                    UserDataModel = UserDataLoader.Load(UserDataFilePath);
+                } catch (Exception) {
+                    MessageBox.Show("An error occured while loading the user data.");
+                    ResetSettings();
+                }
+            else {
+                UserDataModel = new UserDataModel();
+            }
 
-            MainMenuView = new MainMenu(this);
+            MainMenuView = new MainMenuWindow(this);
 
             MainMenuView.Show();
         }
 
-        public void NewGame(GameMode gameMode, IAModel.Difficulty difficulty = IAModel.Difficulty.None)
+        public void NewGame(GameSettings settings)
         {
-            GameController = new GameController(difficulty);
-            GameController.GenerateBoats(5, true);
-            GameController.GenerateBoats(5, false);
+            if (settings.GameMode == GameMode.Singleplayer) {
+                SingleplayerGameController gameController = new SingleplayerGameController(settings.Difficulty);
+                GameController = gameController;
+
+                gameController.GenerateBoats(settings.BoatCount);
+                gameController.IAController.GenerateBoats(settings.BoatCount);
+            } else {
+
+            }
+        }
+
+        /// <summary>
+        /// Reset the user settings/data.
+        /// </summary>
+        /// <param name="fileExists">If true, will act like the user is using this app for the first time.</param>
+        /// <param name="resetAllSettings">If true, will also reset all game stats.</param>
+        public void ResetSettings(bool fileExists = false, bool resetAllSettings = false)
+        {
+            UserDataModel = new UserDataModel();
+
+            if (fileExists) {
+                ShowSettings();
+            }
         }
 
         public void ShowSettings()
         {
-            SettingsView view = new SettingsView(this);
+            SettingsWindow view = new SettingsWindow(this);
             view.Show();
         }
 
         public bool SaveSettings(out Exception exception)
         {
             try {
-                File.WriteAllText(UserDataFilePath, JsonConvert.SerializeObject(userDataModel));
+                UserDataLoader.Save(UserDataFilePath, UserDataModel);
             } catch (Exception ex) {
                 exception = ex;
                 return false;
@@ -55,6 +81,21 @@ namespace BatailleNavale.Controller
 
             exception = null;
             return true;
+        }
+
+        public void Close()
+        {
+            SaveSettings(out _);
+            Application.Current.Shutdown(0);
+        }
+
+        public class GameSettings
+        {
+            public GameMode GameMode;
+            public IAModel.Difficulty Difficulty = IAModel.Difficulty.None;
+
+            /// <summary>Amount of boat to generate</summary>
+            public int BoatCount = 5;
         }
 
         public enum GameMode

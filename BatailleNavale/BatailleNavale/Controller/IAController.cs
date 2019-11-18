@@ -10,13 +10,13 @@ namespace BatailleNavale.Controller
 {
     public class IAController
     {
-        private GameController GameController;
+        private SingleplayerGameController GameController;
         private IAModel IAModel;
 
-        public IAController(GameController controller, IAModel.Difficulty difficulty)
+        public IAController(SingleplayerGameController controller, IAModel.Difficulty difficulty)
         {
-            this.GameController = controller;
-            this.IAModel = new IAModel(difficulty);
+            GameController = controller;
+            IAModel = new IAModel(difficulty);
         }
 
         /// <summary>
@@ -27,15 +27,20 @@ namespace BatailleNavale.Controller
         {
             Vector2 target = Vector2.Zero;
 
-            Vector2 latestHit = GameController.EnemyGrid.Hits.Last();
+            Vector2 latestHit = GameController.PlayerGrid.Hits.Last();
             Random rng = new Random();
 
             //IA Logic...
             switch (IAModel.Difficulty_) {
                 case IAModel.Difficulty.None:
-                    target = new Vector2(rng.Next(0, GridModel.SizeX), rng.Next(0, GridModel.SizeY));
+                    do {
+                        target = new Vector2(rng.Next(0, GridModel.SizeX), rng.Next(0, GridModel.SizeY));
+                    } while (GameController.PlayerGrid.HitExists(target));
                     break;
                 case IAModel.Difficulty.Easy:
+                    if (GameController.PlayerGrid.BoatExists(latestHit)) {
+                        target = new Vector2(latestHit.X + 1, latestHit.Y); //Needs improvement
+                    }
                     break;
                 case IAModel.Difficulty.Normal:
                     break;
@@ -46,6 +51,27 @@ namespace BatailleNavale.Controller
             }
 
             return target;
+        }
+
+        /// <summary>
+        /// Generate boats for the local player.
+        /// </summary>
+        /// <param name="boatCount"></param>
+        public void GenerateBoats(int boatCount)
+        {
+            List<Vector2> usedPositions = new List<Vector2>();
+            Random rnd = new Random();
+            Vector2 pos;
+
+            for (int i = 0; i < boatCount; i++) { //Random boat generation for now, will change later.
+                do {
+                    pos = new Vector2(rnd.Next(GridModel.SizeX), rnd.Next(GridModel.SizeY));
+                } while (usedPositions.Contains(pos));
+
+                usedPositions.Add(pos);
+
+                GameController.CreateBoat(false, pos, rnd.Next(BoatModel.MaxSize), (BoatModel.Orientation)rnd.Next(1), null);
+            }
         }
     }
 }

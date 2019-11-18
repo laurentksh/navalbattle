@@ -13,7 +13,7 @@ namespace BatailleNavale.Model
 
         public IAModel(Difficulty difficulty)
         {
-            this.Difficulty_ = difficulty;
+            Difficulty_ = difficulty;
         }
 
         public enum Difficulty

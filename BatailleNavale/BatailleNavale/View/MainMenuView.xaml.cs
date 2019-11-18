@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
@@ -18,13 +19,13 @@ namespace BatailleNavale.View
     /// <summary>
     /// Logique d'interaction pour MainMenu.xaml
     /// </summary>
-    public partial class MainMenu : Window
+    public partial class MainMenuWindow : Window
     {
         private MainMenuController controller;
-
         private bool gameSettingsDisplayed = false;
+        private Storyboard storyboard = new Storyboard();
 
-        public MainMenu(MainMenuController controller_)
+        public MainMenuWindow(MainMenuController controller_)
         {
             controller = controller_;
 
@@ -45,16 +46,44 @@ namespace BatailleNavale.View
             if (gameSettingsDisplayed) {
                 gameSettingsDisplayed = false;
                 GameSettingsGB.Visibility = Visibility.Hidden;
-                controller.NewGame(MainMenuController.GameMode.Singleplayer, (Model.IAModel.Difficulty)DifficultyCB.SelectedIndex);
+                storyboard.Children.Clear(); //Clear animations
+
+                MainMenuController.GameSettings settings = new MainMenuController.GameSettings
+                {
+                    BoatCount = 5,
+                    Difficulty = (Model.IAModel.Difficulty)DifficultyCB.SelectedIndex,
+                    GameMode = MainMenuController.GameMode.Singleplayer
+                };
+
+                controller.NewGame(settings);
             } else {
                 gameSettingsDisplayed = true;
                 GameSettingsGB.Visibility = Visibility.Visible;
+
+                //Button blink animation (TODO: Improve)
+                DoubleAnimation da = new DoubleAnimation();
+                da.From = 1.0;
+                da.To = 0.3;
+                da.RepeatBehavior = RepeatBehavior.Forever;
+                da.AutoReverse = true;
+
+                storyboard.Children.Add(da);
+                Storyboard.SetTargetProperty(da, new PropertyPath("(Button.Opacity)"));
+                Storyboard.SetTarget(da, SingleplayerBtn);
+                storyboard.Begin();
             }
         }
 
         private void MultiplayerBtn_Click(object sender, RoutedEventArgs e)
         {
-            controller.NewGame(MainMenuController.GameMode.Multiplayer);
+            MainMenuController.GameSettings settings = new MainMenuController.GameSettings
+            {
+                BoatCount = 5,
+                GameMode = MainMenuController.GameMode.Multiplayer,
+                Difficulty = Model.IAModel.Difficulty.None
+            };
+
+            controller.NewGame(settings);
         }
 
         private void SettingsBtn_Click(object sender, RoutedEventArgs e)
@@ -64,7 +93,12 @@ namespace BatailleNavale.View
 
         private void QuitBtn_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown(0);
+            controller.Close();
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            controller.Close();
         }
     }
 }

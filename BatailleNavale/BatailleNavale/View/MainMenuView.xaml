@@ -1,11 +1,12 @@
-﻿<Window x:Class="BatailleNavale.View.MainMenu"
+﻿<Window x:Class="BatailleNavale.View.MainMenuWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BatailleNavale.View"
         mc:Ignorable="d"
-        Title="MainMenu" Height="450" Width="800">
+        Title="MainMenu" Height="450" Width="800"
+        Closed="Window_Closed">
     <Grid>
         <Button Name="SingleplayerBtn" Content="Singleplayer" HorizontalAlignment="Left" Height="47" Margin="299,66,0,0" VerticalAlignment="Top" Width="181" FontSize="20" Click="SingleplayerBtn_Click"/>
         <Button Name="MultiplayerBtn" Content="Multiplayer" HorizontalAlignment="Left" Height="47" Margin="299,142,0,0" VerticalAlignment="Top" Width="181" FontSize="20" Click="MultiplayerBtn_Click"/>
