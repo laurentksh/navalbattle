@@ -19,13 +19,13 @@ namespace BatailleNavale.View
     /// <summary>
     /// Logique d'interaction pour MainMenu.xaml
     /// </summary>
-    public partial class MainMenu : Window
+    public partial class MainMenuWindow : Window
     {
         private MainMenuController controller;
         private bool gameSettingsDisplayed = false;
         private Storyboard storyboard = new Storyboard();
 
-        public MainMenu(MainMenuController controller_)
+        public MainMenuWindow(MainMenuController controller_)
         {
             controller = controller_;
 
@@ -46,11 +46,21 @@ namespace BatailleNavale.View
             if (gameSettingsDisplayed) {
                 gameSettingsDisplayed = false;
                 GameSettingsGB.Visibility = Visibility.Hidden;
-                controller.NewGame(MainMenuController.GameMode.Singleplayer, (Model.IAModel.Difficulty)DifficultyCB.SelectedIndex);
+                storyboard.Children.Clear(); //Clear animations
+
+                MainMenuController.GameSettings settings = new MainMenuController.GameSettings
+                {
+                    BoatCount = 5,
+                    Difficulty = (Model.IAModel.Difficulty)DifficultyCB.SelectedIndex,
+                    GameMode = MainMenuController.GameMode.Singleplayer
+                };
+
+                controller.NewGame(settings);
             } else {
                 gameSettingsDisplayed = true;
                 GameSettingsGB.Visibility = Visibility.Visible;
 
+                //Button blink animation (TODO: Improve)
                 DoubleAnimation da = new DoubleAnimation();
                 da.From = 1.0;
                 da.To = 0.3;
@@ -66,7 +76,14 @@ namespace BatailleNavale.View
 
         private void MultiplayerBtn_Click(object sender, RoutedEventArgs e)
         {
-            controller.NewGame(MainMenuController.GameMode.Multiplayer);
+            MainMenuController.GameSettings settings = new MainMenuController.GameSettings
+            {
+                BoatCount = 5,
+                GameMode = MainMenuController.GameMode.Multiplayer,
+                Difficulty = Model.IAModel.Difficulty.None
+            };
+
+            controller.NewGame(settings);
         }
 
         private void SettingsBtn_Click(object sender, RoutedEventArgs e)

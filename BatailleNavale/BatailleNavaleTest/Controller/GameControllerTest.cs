@@ -8,7 +8,7 @@ namespace BatailleNavaleTest.Controller
     [TestClass]
     public class GameControllerTest
     {
-        GameController controller = new GameController(BatailleNavale.Model.IAModel.Difficulty.None);
+        SingleplayerGameController controller = new SingleplayerGameController(BatailleNavale.Model.IAModel.Difficulty.None);
 
         [TestMethod]
         public void CreateBoatTest()
@@ -19,7 +19,8 @@ namespace BatailleNavaleTest.Controller
         [TestMethod]
         public void GenerateBoatsTest()
         {
-            controller.GenerateBoats(5, true);
+            controller.GenerateBoats(5);
+            controller.IAController.GenerateBoats(5);
         }
 
         [TestMethod]

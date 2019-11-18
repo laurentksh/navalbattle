@@ -10,10 +10,10 @@ namespace BatailleNavale.Controller
 {
     public class IAController
     {
-        private GameController GameController;
+        private SingleplayerGameController GameController;
         private IAModel IAModel;
 
-        public IAController(GameController controller, IAModel.Difficulty difficulty)
+        public IAController(SingleplayerGameController controller, IAModel.Difficulty difficulty)
         {
             GameController = controller;
             IAModel = new IAModel(difficulty);
@@ -51,6 +51,27 @@ namespace BatailleNavale.Controller
             }
 
             return target;
+        }
+
+        /// <summary>
+        /// Generate boats for the local player.
+        /// </summary>
+        /// <param name="boatCount"></param>
+        public void GenerateBoats(int boatCount)
+        {
+            List<Vector2> usedPositions = new List<Vector2>();
+            Random rnd = new Random();
+            Vector2 pos;
+
+            for (int i = 0; i < boatCount; i++) { //Random boat generation for now, will change later.
+                do {
+                    pos = new Vector2(rnd.Next(GridModel.SizeX), rnd.Next(GridModel.SizeY));
+                } while (usedPositions.Contains(pos));
+
+                usedPositions.Add(pos);
+
+                GameController.CreateBoat(false, pos, rnd.Next(BoatModel.MaxSize), (BoatModel.Orientation)rnd.Next(1), null);
+            }
         }
     }
 }

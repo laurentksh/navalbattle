@@ -20,7 +20,7 @@ namespace BatailleNavale.Model
         {
             Boats = new List<BoatModel>();
             Hits = new List<Vector2>();
-            State_ = State.WarmUp;
+            State_ = State.Disabled;
         }
 
         public bool BoatExists(Vector2 pos)
@@ -52,9 +52,9 @@ namespace BatailleNavale.Model
 
         public enum State
         {
-            WarmUp,
-            InGame,
-            EndGame
+            EditBoats,
+            Enabled,
+            Disabled,
         }
     }
 }

@@ -13,7 +13,14 @@ namespace BatailleNavaleTest.Controller
         [TestMethod]
         public void NewGameTest()
         {
-            controller.NewGame(GameMode.Singleplayer);
+            GameSettings settings = new GameSettings
+            {
+                GameMode = GameMode.Singleplayer,
+                BoatCount = 5,
+                Difficulty = BatailleNavale.Model.IAModel.Difficulty.None
+            };
+
+            controller.NewGame(settings);
         }
 
         [TestMethod]

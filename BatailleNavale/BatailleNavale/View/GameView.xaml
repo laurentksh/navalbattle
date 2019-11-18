@@ -1,63 +1,62 @@
-﻿<Window x:Class="BatailleNavale.GameWindow"
+﻿<Window x:Class="BatailleNavale.View.GameWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BatailleNavale"
+        xmlns:local="clr-namespace:BatailleNavale.View"
         mc:Ignorable="d"
-        Title="MainWindow" Height="636.679" Width="1000.598" ResizeMode="CanMinimize">
+        Title="GameWindow" Height="636.679" Width="1000.598" ResizeMode="CanMinimize">
     <Grid>
-        <Grid Name="GridPlayer" ShowGridLines="True" Height="400" Width="400" Margin="42,46,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <Grid Name="PlayerGrid" ShowGridLines="True" Height="400" Width="400" Margin="42,46,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Drop="PlayerGrid_Drop" AllowDrop="True">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="65*"></RowDefinition>
-                <RowDefinition Height="65*"></RowDefinition>
-                <RowDefinition Height="65*"></RowDefinition>
-                <RowDefinition Height="65*"></RowDefinition>
-                <RowDefinition Height="65*"></RowDefinition>
-                <RowDefinition Height="65*"></RowDefinition>
-                <RowDefinition Height="65*"></RowDefinition>
-                <RowDefinition Height="65*"></RowDefinition>
-                <RowDefinition Height="65*"></RowDefinition>
-                <RowDefinition Height="65*"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
             </Grid.RowDefinitions>
-            <Rectangle Fill="Black" Grid.Column="8"></Rectangle>
         </Grid>
-        <Grid Name="GridEnemy" ShowGridLines="True" Height="400" Width="400" Margin="0,46,34,0" VerticalAlignment="Top" HorizontalAlignment="Right">
+        <Grid Name="EnemyGrid" ShowGridLines="True" Height="400" Width="400" Margin="0,46,34,0" VerticalAlignment="Top" HorizontalAlignment="Right">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="65*"></RowDefinition>
-                <RowDefinition Height="65*"></RowDefinition>
-                <RowDefinition Height="65*"></RowDefinition>
-                <RowDefinition Height="65*"></RowDefinition>
-                <RowDefinition Height="65*"></RowDefinition>
-                <RowDefinition Height="65*"></RowDefinition>
-                <RowDefinition Height="65*"></RowDefinition>
-                <RowDefinition Height="65*"></RowDefinition>
-                <RowDefinition Height="65*"></RowDefinition>
-                <RowDefinition Height="65*"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
             </Grid.RowDefinitions>
         </Grid>
         <Button Name="ReadyBtn" Content="Ready" HorizontalAlignment="Left" Margin="42,513,0,0" VerticalAlignment="Top" Width="158" Height="52" FontSize="18" Click="ReadyBtn_Click"/>
