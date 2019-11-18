@@ -67,8 +67,9 @@ namespace BatailleNavale.Controller
                         target = new Vector2(latestHits[0].X + offsetX, latestHits[0].Y + offsetY);
 
                     } else if (GameController.PlayerGrid.BoatExists(latestHits[1]) && !GameController.PlayerGrid.BoatExists(latestHits[0]))
-                    {
-
+                    {//TODO : Change offsets via direction
+                        offsetX = 0;
+                        offsetY = 0;
                             target = new Vector2(latestHits[1].X + offsetX, latestHits[1].Y + offsetY);
                     } 
                         if (GameController.PlayerGrid.BoatExists(latestHits[0])) {
