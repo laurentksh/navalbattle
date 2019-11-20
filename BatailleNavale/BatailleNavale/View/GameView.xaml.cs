@@ -49,6 +49,8 @@ namespace BatailleNavale.View
             playerGridBackground = new List<Rectangle>();
             enemyGridBackground = new List<Rectangle>();
 
+            QuitBtn.Visibility = Visibility.Hidden;
+
             //Generate filler rectangles so drag and drop works.
             //PlayerGrid
             for (int x = 0; x < GridModel.SizeX; x++) {
@@ -82,7 +84,7 @@ namespace BatailleNavale.View
 
                     Grid.SetColumn(filler, x);
                     Grid.SetRow(filler, y);
-                    Panel.SetZIndex(filler, -100);
+                    Panel.SetZIndex(filler, 100);
 
                     filler.MouseDown += Cell_Clicked;
 
@@ -107,12 +109,12 @@ namespace BatailleNavale.View
         public void DisplayBoat(BoatModel boat, Player playerGrid)
         {
             ImageBrush imageBrush = new ImageBrush(BoatModel.GetBoatImage(boat.BoatTypeId));
-            imageBrush.Stretch = Stretch.UniformToFill;
+            imageBrush.Stretch = Stretch.Fill;
 
             Rectangle boatRect = new Rectangle
             {
-                //Fill = imageBrush,
-                Fill = Brushes.Black,
+                Fill = imageBrush,
+                //Fill = Brushes.Black,
 
             };
 
@@ -124,8 +126,6 @@ namespace BatailleNavale.View
                 PlayerGrid.Children.Add(boatRect);
             } else {
                 EnemyGrid.Children.Add(boatRect);
-
-                boatRect.MouseDown += Cell_Clicked;
             }
 
 
@@ -185,7 +185,7 @@ namespace BatailleNavale.View
                     else
                         boat.BoatUIElement.Visibility = Visibility.Hidden;
                 }
-            } 
+            }
         }
 
         private void Cell_Clicked(object sender, MouseButtonEventArgs e)
@@ -299,6 +299,16 @@ namespace BatailleNavale.View
 
                 e.Handled = true;
             }
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            controller.QuitGame(controller.Result);
+        }
+
+        private void QuitBtn_Click(object sender, RoutedEventArgs e)
+        {
+            controller.QuitGame(controller.Result);
         }
     }
 }

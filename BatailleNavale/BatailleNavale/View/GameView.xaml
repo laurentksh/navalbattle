@@ -5,9 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BatailleNavale.View"
         mc:Ignorable="d"
-        Title="GameWindow" Height="636.679" Width="1000.598" ResizeMode="CanMinimize">
+        Title="GameWindow" Height="706.679" Width="1000.598" ResizeMode="CanMinimize"
+        Closed="Window_Closed"
+        >
     <Grid>
-        <Grid Name="PlayerGrid" ShowGridLines="True" Height="400" Width="400" Margin="42,46,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Drop="PlayerGrid_Drop" AllowDrop="True">
+        <Grid Name="PlayerGrid" ShowGridLines="True" Height="400" Width="400" Margin="35,120,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Drop="PlayerGrid_Drop" AllowDrop="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="40"></ColumnDefinition>
                 <ColumnDefinition Width="40"></ColumnDefinition>
@@ -33,7 +35,7 @@
                 <RowDefinition Height="40"></RowDefinition>
             </Grid.RowDefinitions>
         </Grid>
-        <Grid Name="EnemyGrid" ShowGridLines="True" Height="400" Width="400" Margin="0,46,34,0" VerticalAlignment="Top" HorizontalAlignment="Right">
+        <Grid Name="EnemyGrid" ShowGridLines="True" Height="400" Width="400" Margin="0,120,35,0" VerticalAlignment="Top" HorizontalAlignment="Right">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="40"></ColumnDefinition>
                 <ColumnDefinition Width="40"></ColumnDefinition>
@@ -59,7 +61,16 @@
                 <RowDefinition Height="40"></RowDefinition>
             </Grid.RowDefinitions>
         </Grid>
-        <Button Name="ReadyBtn" Content="Ready" HorizontalAlignment="Left" Margin="42,513,0,0" VerticalAlignment="Top" Width="158" Height="52" FontSize="18" Click="ReadyBtn_Click"/>
-        <Label Name="GameWonLbl" Visibility="Hidden" Content="&lt;Player&gt; won !" HorizontalAlignment="Center" Height="65" Margin="300,480,300,51" VerticalAlignment="Center" Width="417" Panel.ZIndex="1000" FontSize="48"/>
+        <Button Name="ReadyBtn" Content="Ready" HorizontalAlignment="Left" Margin="42,573,0,-17" VerticalAlignment="Top" Width="158" Height="52" FontSize="18" Click="ReadyBtn_Click"/>
+        <Label Name="GameWonLbl" Visibility="Hidden" Content="&lt;Player&gt; won !" HorizontalAlignment="Center" Height="79" Margin="266,561,247,38" VerticalAlignment="Center" Width="482" Panel.ZIndex="1000" FontSize="48" HorizontalContentAlignment="Center"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="80" Margin="35,15,0,0" VerticalAlignment="Top" Width="80">
+            <Image Name="PlayerPicture" HorizontalAlignment="Left" Height="80" Margin="0,0,0,0" VerticalAlignment="Top" Width="80"/>
+        </Border>
+        <Label Name="PlayerInfo" Content="&lt;Player&gt;" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Height="80" Margin="120,15,0,0" VerticalAlignment="Top" Width="150"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Right" Height="80" Margin="0,15,35,0" VerticalAlignment="Top" Width="80">
+            <Image Name="EnemyPicture" HorizontalAlignment="Left" Height="80" Margin="0,0,0,0" VerticalAlignment="Top" Width="80"/>
+        </Border>
+        <Label Name="EnemyInfo" Content="&lt;Player&gt;" HorizontalContentAlignment="Right" HorizontalAlignment="Right" Height="80" Margin="0,15,120,0" VerticalAlignment="Top" Width="150"/>
+        <Button Name="QuitBtn" Content="Quit" HorizontalAlignment="Left" Margin="802,0,0,53" VerticalAlignment="Bottom" Width="158" Height="52" FontSize="18" Click="QuitBtn_Click"/>
     </Grid>
 </Window>

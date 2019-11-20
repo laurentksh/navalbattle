@@ -1,4 +1,5 @@
 ﻿using BatailleNavale.Controller;
+using BatailleNavale.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,11 +35,22 @@ namespace BatailleNavale.View
             MultiplayerBtn.IsEnabled = false;
             GameSettingsGB.Visibility = Visibility.Hidden;
 
-            foreach (string item in Enum.GetNames(typeof(Model.IAModel.Difficulty)))
+            foreach (string item in Enum.GetNames(typeof(IAModel.Difficulty)))
                 DifficultyCB.Items.Add(item);
 
             if (DifficultyCB.Items.Count > 0)
                 DifficultyCB.SelectedIndex = 0;
+
+            //Button blink animation (TODO: Improve)
+            DoubleAnimation da = new DoubleAnimation();
+            da.From = 1.0;
+            da.To = 0.3;
+            da.RepeatBehavior = RepeatBehavior.Forever;
+            da.AutoReverse = true;
+
+            storyboard.Children.Add(da);
+            Storyboard.SetTargetProperty(da, new PropertyPath("(Button.Opacity)"));
+            Storyboard.SetTarget(da, SingleplayerBtn);
         }
 
         private void SingleplayerBtn_Click(object sender, RoutedEventArgs e)
@@ -46,13 +58,13 @@ namespace BatailleNavale.View
             if (gameSettingsDisplayed) {
                 gameSettingsDisplayed = false;
                 GameSettingsGB.Visibility = Visibility.Hidden;
-                storyboard.Children.Clear(); //Clear animations
+                storyboard.Stop();
 
                 MainMenuController.GameSettings settings = new MainMenuController.GameSettings
                 {
                     BoatCount = 5,
-                    Difficulty = (Model.IAModel.Difficulty)DifficultyCB.SelectedIndex,
-                    GameMode = MainMenuController.GameMode.Singleplayer
+                    Difficulty = (IAModel.Difficulty)DifficultyCB.SelectedIndex,
+                    GameMode = GameMode.Singleplayer
                 };
 
                 controller.NewGame(settings);
@@ -60,16 +72,6 @@ namespace BatailleNavale.View
                 gameSettingsDisplayed = true;
                 GameSettingsGB.Visibility = Visibility.Visible;
 
-                //Button blink animation (TODO: Improve)
-                DoubleAnimation da = new DoubleAnimation();
-                da.From = 1.0;
-                da.To = 0.3;
-                da.RepeatBehavior = RepeatBehavior.Forever;
-                da.AutoReverse = true;
-
-                storyboard.Children.Add(da);
-                Storyboard.SetTargetProperty(da, new PropertyPath("(Button.Opacity)"));
-                Storyboard.SetTarget(da, SingleplayerBtn);
                 storyboard.Begin();
             }
         }
@@ -79,8 +81,8 @@ namespace BatailleNavale.View
             MainMenuController.GameSettings settings = new MainMenuController.GameSettings
             {
                 BoatCount = 5,
-                GameMode = MainMenuController.GameMode.Multiplayer,
-                Difficulty = Model.IAModel.Difficulty.None
+                GameMode = GameMode.Multiplayer,
+                Difficulty = IAModel.Difficulty.None
             };
 
             controller.NewGame(settings);

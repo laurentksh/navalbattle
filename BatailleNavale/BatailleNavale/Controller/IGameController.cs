@@ -13,10 +13,13 @@ namespace BatailleNavale.Controller
     {
         GameState GameState { get; set; }
 
+        MainMenuController MainMenuController { get; set; }
+
         GameWindow GameView { get; set; }
         GridModel PlayerGrid { get; set; }
         GridModel EnemyGrid { get; set; }
 
+        GameResult Result { get; set; }
 
         /// <summary>Warn the host controller that we are ready. (Client and Host)</summary>
         void SetReady();
@@ -36,6 +39,12 @@ namespace BatailleNavale.Controller
         /// <summary>Signal the other player that the game is won and display a UI message. (Host only)</summary>
         /// <param name="player"></param>
         void GameWon(Player player);
+
+        /// <summary>
+        /// Quit game and signal the main menu controller that the game ended.
+        /// </summary>
+        /// <param name="result"></param>
+        void QuitGame(GameResult result);
     }
 
     public enum GameState
@@ -44,6 +53,15 @@ namespace BatailleNavale.Controller
         Player1Turn,
         Player2Turn,
         GameEnded
+    }
+
+    [Flags]
+    public enum GameResult
+    {
+        LocalPlayerWon,
+        EnemyWon,
+        Draw,
+        Interupted,
     }
 
     public enum Player

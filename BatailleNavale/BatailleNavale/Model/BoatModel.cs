@@ -51,6 +51,9 @@ namespace BatailleNavale.Model
         /// <returns></returns>
         public static BitmapImage GetBoatImage(int typeId = -1)
         {
+            if (!System.IO.File.Exists($"./Resources/BoatImages/Boat{typeId}.png"))
+                typeId = -1;
+
             switch (typeId) {
                 default:
                     return new BitmapImage(new Uri($"./Resources/BoatImages/Boat{typeId}.png", UriKind.RelativeOrAbsolute));
@@ -59,45 +62,42 @@ namespace BatailleNavale.Model
             }
         }
 
-        public static List<BoatPresets> GetBoatPresets()
+        public static List<BoatPreset> GetBoatPresets()
         {
-            List<BoatPresets> boatPresets = new List<BoatPresets>();
-
-            boatPresets.Add(new BoatPresets
+            List<BoatPreset> boatPresets = new List<BoatPreset>
             {
-                boatId = 0,
-                boatSize = 2
+                new BoatPreset
+                {
+                    boatId = 0,
+                    boatSize = 2
+                },
 
-            });
-            boatPresets.Add(new BoatPresets
-            {
-                boatId = 1,
-                boatSize = 3
+                new BoatPreset
+                {
+                    boatId = 1,
+                    boatSize = 3
+                },
 
-            });
-            boatPresets.Add(new BoatPresets
-            {
-                boatId = 2,
-                boatSize = 3
+                new BoatPreset
+                {
+                    boatId = 2,
+                    boatSize = 3
+                },
 
-            });
-            boatPresets.Add(new BoatPresets
-            {
-                boatId = 3,
-                boatSize = 4
+                new BoatPreset
+                {
+                    boatId = 3,
+                    boatSize = 4
+                },
 
-            });
-            boatPresets.Add(new BoatPresets
-            {
-                boatId = 4,
-                boatSize = 5
-
-            });
-
+                new BoatPreset
+                {
+                    boatId = 4,
+                    boatSize = 5
+                }
+            };
 
             return boatPresets;
-
-
         }
 
         public enum Orientation
@@ -107,7 +107,7 @@ namespace BatailleNavale.Model
         }
     }
 
-    public struct BoatPresets
+    public struct BoatPreset
     {
         public int boatId;
         public int boatSize;

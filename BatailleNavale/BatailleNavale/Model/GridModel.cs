@@ -52,8 +52,8 @@ namespace BatailleNavale.Model
         {
             List<BoatModel> destroyedBoats = new List<BoatModel>();
 
-            foreach (BoatModel boat in this.Boats) {
-                int hits = boat.GetDestroyedCases(this.Hits);
+            foreach (BoatModel boat in Boats) {
+                int hits = boat.GetDestroyedCases(Hits);
 
                 if (hits == boat.Size)
                     destroyedBoats.Add(boat);
