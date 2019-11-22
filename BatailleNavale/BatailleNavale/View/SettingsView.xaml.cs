@@ -33,13 +33,14 @@ namespace BatailleNavale.View
             HostPortTB.Text = Convert.ToString(controller.UserDataModel.Port);
         }
         
-        private void SettingsBtn_Click(object sender, RoutedEventArgs e)
+        private void SaveSettingsBtn_Click(object sender, RoutedEventArgs e)
         {
             controller.UserDataModel.Username = UsernameTB.Text;
             controller.UserDataModel.Port = Convert.ToInt32(HostPortTB.Text);
 
             if (controller.SaveSettings(out Exception ex)) { //Save operation successful
                 MessageBox.Show("Settings saved successfully !", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                Close();
             } else { //Save operation failed
                 MessageBox.Show("An error occured while saving the settings: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -56,6 +57,27 @@ namespace BatailleNavale.View
                 System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
                 Application.Current.Shutdown(0);
             }
+        }
+
+        private void ChangeProfilePic_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+
+            dialog.Multiselect = false;
+            dialog.DefaultExt = ".png";
+            dialog.Filter = "PNG Files (*.png)|*.png|JPEG Files (*.jpeg)|*.jpeg|JPG Files (*.jpg)|*.jpg";
+
+            bool? result = dialog.ShowDialog(this);
+
+            if (result.HasValue && result.Value) {
+                controller.ChangeProfilePicture(dialog.FileName);
+            }
+        }
+
+        private void ResetProfilePic_Click(object sender, RoutedEventArgs e)
+        {
+            controller.UserDataModel.ResetProfilePicture();
+            controller.RefreshUserData();
         }
     }
 }

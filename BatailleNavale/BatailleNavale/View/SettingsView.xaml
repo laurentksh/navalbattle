@@ -7,11 +7,24 @@
         mc:Ignorable="d"
         Title="Settings" Height="450" Width="600">
     <Grid>
-        <Button Name="SettingsBtn" Content="Save" HorizontalAlignment="Left" Margin="493,381,0,0" VerticalAlignment="Top" Width="89" Height="28" Click="SettingsBtn_Click"/>
-        <TextBox Name="UsernameTB" HorizontalAlignment="Left" Height="23" Margin="10,66,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="160"/>
-        <Label Content="Username" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top"/>
-        <TextBox Name="HostPortTB" HorizontalAlignment="Left" Height="23" Margin="10,132,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="69"/>
-        <Label Content="Server port" HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top"/>
-        <Button Name="ResetBtn" Content="Reset all" HorizontalAlignment="Left" Margin="385,381,0,0" VerticalAlignment="Top" Width="89" Height="28" Click="ResetBtn_Click"/>
+        <GroupBox Header="Player" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,0,0,0" Height="250" Width="225">
+            <Grid>
+
+                <TextBox Name="UsernameTB" HorizontalAlignment="Left" Height="23" Margin="8,38,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="160"/>
+                <Label Content="Username" HorizontalAlignment="Left" Margin="8,12,0,0" VerticalAlignment="Top"/>
+                <TextBox Name="HostPortTB" HorizontalAlignment="Left" Height="23" Margin="8,95,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="69"/>
+                <Label Content="Server port" HorizontalAlignment="Left" Margin="8,69,0,0" VerticalAlignment="Top"/>
+
+                <Label Content="Profile picture" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,130,0,0"/>
+                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,155,0,0">
+                    <Hyperlink Click="ChangeProfilePic_Click">Change</Hyperlink>
+                    <LineBreak/>
+                    <Hyperlink Click="ResetProfilePic_Click">Reset</Hyperlink>
+                </TextBlock>
+            </Grid>
+        </GroupBox>
+
+        <Button Name="ResetBtn" Content="Reset all" HorizontalAlignment="Right" Margin="0,0,120,10" VerticalAlignment="Bottom" Width="90" Height="30" Click="ResetBtn_Click"/>
+        <Button Name="SaveSettingsBtn" Content="Save" HorizontalAlignment="Right" Margin="0,0,20,10" VerticalAlignment="Bottom" Width="90" Height="30" Click="SaveSettingsBtn_Click"/>
     </Grid>
 </Window>

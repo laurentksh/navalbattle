@@ -39,7 +39,7 @@ namespace BatailleNavale.View
         private List<Rectangle> playerGridBackground;
         private List<Rectangle> enemyGridBackground;
 
-        public GameWindow(SingleplayerGameController controller_)
+        public GameWindow(IGameController controller_)
         {
             controller = controller_;
 
@@ -91,11 +91,18 @@ namespace BatailleNavale.View
                     enemyGridBackground.Add(filler);
                 }
             }
+
+            PlayerInfo.Content = controller.MainMenuController.UserDataModel.ToString();
+            if (controller.GameMode == GameMode.Singleplayer) {
+                SingleplayerGameController spController = (SingleplayerGameController)controller;
+                EnemyInfo.Content = "IA - " + spController.IAController.IAModel.Difficulty_;
+            } else {
+
+            }
         }
 
         public void DrawRectangle(Rectangle rect, Vector2 pos, Player playerGrid)
         {
-
             if (playerGrid == Player.Player1)
                 PlayerGrid.Children.Add(rect);
             else
@@ -263,12 +270,12 @@ namespace BatailleNavale.View
             int rowIndex = Grid.GetRow(rectangle);
 
             foreach (UIBoat boat in DrawnBoats) {
-                if (boat.Boat.Position == new Vector2(columnIndex, rowIndex)) //User dropped the boat on another boat
+                if (boat.Player == Player.Player1 && boat.Boat.Position == new Vector2(columnIndex, rowIndex)) //User dropped the boat on another boat
                     return;
             }
 
             foreach (UIBoat boat in DrawnBoats) {
-                if (boat.Boat.Position == updatingBoat) {
+                if (boat.Boat.Position == updatingBoat && boat.Player == Player.Player1) {
                     boat.UpdatePosition(new Vector2(columnIndex, rowIndex));
                 }
             }

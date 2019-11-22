@@ -13,7 +13,7 @@ namespace BatailleNavaleTest.Controllers
         public IAControllerTest()
         {
 
-            singleplayerGameController = new SingleplayerGameController(BatailleNavale.Model.IAModel.Difficulty.None);
+            singleplayerGameController = new SingleplayerGameController(new MainMenuController(), BatailleNavale.Model.IAModel.Difficulty.None);
             controller = new IAController(singleplayerGameController, BatailleNavale.Model.IAModel.Difficulty.None);
         }
 

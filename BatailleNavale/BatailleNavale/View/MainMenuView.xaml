@@ -13,11 +13,21 @@
         <Button Name="SettingsBtn" Content="Settings" HorizontalAlignment="Center" Height="47" Margin="0,0,0,100" VerticalAlignment="Bottom" Width="181" FontSize="20" Click="SettingsBtn_Click"/>
         <Button Name="QuitBtn" Content="Quit" HorizontalAlignment="Center" Height="47" Margin="0,0,0,30" VerticalAlignment="Bottom" Width="181" FontSize="20" Click="QuitBtn_Click"/>
         <GroupBox Name="GameSettingsGB" Header="Game settings" HorizontalAlignment="Left" Height="137" Margin="547,52,0,0" VerticalAlignment="Top" Width="193">
-            <ComboBox Name="DifficultyCB" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120"/>
+            <Grid>
+                <Label Content="Difficulty" Margin="5,0,0,0"/>
+                <ComboBox Name="DifficultyCB" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,25,0,0"  Width="120"/>
+                <Label Content="Boat amount" Margin="5,45,0,0"/>
+                <ComboBox Name="BoatAmountCB" Margin="10,75,0,0" Width="120" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            </Grid>
         </GroupBox>
-        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="80" Margin="20,15,0,0" VerticalAlignment="Top" Width="80">
-            <Image Name="PlayerPicture" HorizontalAlignment="Left" Height="80" Margin="0,0,0,0" VerticalAlignment="Top" Width="80"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="96" Width="96" Margin="20,15,0,0" VerticalAlignment="Top">
+            <Image Name="PlayerPicture" Stretch="Fill" HorizontalAlignment="Left" Height="96" Width="96" Margin="0,0,0,0" VerticalAlignment="Top"/>
         </Border>
-        <Label Name="PlayerInfo" Content="&lt;Player&gt;" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Height="200" Margin="20,105,0,0" VerticalAlignment="Top" Width="200"/>
+        <Label Name="PlayerInfo" Content="&lt;Player&gt;" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Height="200" Margin="20,120,0,0" VerticalAlignment="Top" Width="200"/>
+        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="120,15,0,0">
+            <Hyperlink Click="ChangeProfilePic_Click">Change</Hyperlink>
+            <LineBreak/>
+            <Hyperlink Click="ResetProfilePic_Click">Reset</Hyperlink>
+        </TextBlock>
     </Grid>
 </Window>

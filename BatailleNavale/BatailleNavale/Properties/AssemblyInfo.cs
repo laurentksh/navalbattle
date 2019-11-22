@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Naval Battle")]
-[assembly: AssemblyCopyright("Copyright © Laurent Keusch 2019")]
+[assembly: AssemblyCopyright("Copyright © Laurent Keusch - 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -18,14 +18,15 @@ namespace BatailleNavale.Model
         public Orientation Orientation_ { get; set; }
         public int BoatTypeId { get; set; }
 
-        public BoatModel(Vector2 pos, int size, Orientation orientation)
+        public BoatModel(Vector2 pos, int size, Orientation orientation, int boatTypeId = -1)
         {
             Position = pos;
             Size = size;
             Orientation_ = orientation;
+            BoatTypeId = boatTypeId;
         }
 
-        public int GetDestroyedCases(List<Vector2> hits)
+        public int GetDestroyedCases(List<Hit> hits)
         {
             int hitsCount = 0;
 
@@ -37,8 +38,9 @@ namespace BatailleNavale.Model
                 else
                     v = new Vector2(Position.X, Position.Y);
 
-                if (hits.Contains(v))
-                    hitsCount++;
+                foreach (Hit hit in hits)
+                    if (hit.Position == v)
+                        hitsCount++;
             }
 
             return hitsCount;

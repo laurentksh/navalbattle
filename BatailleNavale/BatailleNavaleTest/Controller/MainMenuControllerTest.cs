@@ -1,5 +1,6 @@
 ﻿using System;
 using BatailleNavale.Controller;
+using BatailleNavale.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static BatailleNavale.Controller.MainMenuController;
 
@@ -17,7 +18,7 @@ namespace BatailleNavaleTest.Controller
             {
                 GameMode = GameMode.Singleplayer,
                 BoatCount = 5,
-                Difficulty = BatailleNavale.Model.IAModel.Difficulty.None
+                Difficulty = IAModel.Difficulty.None
             };
 
             controller.NewGame(settings);

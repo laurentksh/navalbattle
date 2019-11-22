@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BatailleNavale.View"
         mc:Ignorable="d"
-        Title="GameWindow" Height="706.679" Width="1000.598" ResizeMode="CanMinimize"
+        Title="GameWindow" Height="750" Width="1000" ResizeMode="CanMinimize"
         Closed="Window_Closed"
         >
     <Grid>
@@ -61,7 +61,8 @@
                 <RowDefinition Height="40"></RowDefinition>
             </Grid.RowDefinitions>
         </Grid>
-        <Button Name="ReadyBtn" Content="Ready" HorizontalAlignment="Left" Margin="42,573,0,-17" VerticalAlignment="Top" Width="158" Height="52" FontSize="18" Click="ReadyBtn_Click"/>
+        <Button Name="ReadyBtn" Content="Ready" HorizontalAlignment="Left" Margin="20,0,0,50" VerticalAlignment="Bottom" Width="158" Height="52" FontSize="18" Click="ReadyBtn_Click"/>
+        <Button Name="QuitBtn" Content="Quit" HorizontalAlignment="Right" Margin="0,0,20,50" VerticalAlignment="Bottom" Width="158" Height="52" FontSize="18" Click="QuitBtn_Click"/>
         <Label Name="GameWonLbl" Visibility="Hidden" Content="&lt;Player&gt; won !" HorizontalAlignment="Center" Height="79" Margin="266,561,247,38" VerticalAlignment="Center" Width="482" Panel.ZIndex="1000" FontSize="48" HorizontalContentAlignment="Center"/>
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="80" Margin="35,15,0,0" VerticalAlignment="Top" Width="80">
             <Image Name="PlayerPicture" HorizontalAlignment="Left" Height="80" Margin="0,0,0,0" VerticalAlignment="Top" Width="80"/>
@@ -71,6 +72,15 @@
             <Image Name="EnemyPicture" HorizontalAlignment="Left" Height="80" Margin="0,0,0,0" VerticalAlignment="Top" Width="80"/>
         </Border>
         <Label Name="EnemyInfo" Content="&lt;Player&gt;" HorizontalContentAlignment="Right" HorizontalAlignment="Right" Height="80" Margin="0,15,120,0" VerticalAlignment="Top" Width="150"/>
-        <Button Name="QuitBtn" Content="Quit" HorizontalAlignment="Left" Margin="802,0,0,53" VerticalAlignment="Bottom" Width="158" Height="52" FontSize="18" Click="QuitBtn_Click"/>
+        <Border BorderBrush="Black" BorderThickness="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" Width="400" Height="130" Margin="50">
+            <TextBlock>
+            </TextBlock>
+        </Border>
+        <GroupBox VerticalAlignment="Bottom" HorizontalAlignment="Center">
+            <Grid>
+                <TextBox HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" Margin="0,0,0,10" Width="325" TextWrapping="Wrap" Text="Enter a message..." FontSize="20"/>
+                <Button HorizontalAlignment="Right" VerticalAlignment="Center" Width="30" Height="30"></Button>
+            </Grid>
+        </GroupBox>
     </Grid>
 </Window>

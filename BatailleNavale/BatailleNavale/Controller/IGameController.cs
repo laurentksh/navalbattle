@@ -11,18 +11,36 @@ namespace BatailleNavale.Controller
 {
     public interface IGameController
     {
+        GameMode GameMode { get; set; }
+
+        bool? Host { get; set; }
+
+        /// <summary>Who is the local player ?</summary>
+        Player LocalPlayer { get; set; }
+
+        /// <summary>The current state of  the game.</summary>
         GameState GameState { get; set; }
 
+        /// <summary>Game result.</summary>
+        GameResult Result { get; set; }
+
+
+        /// <summary>MainMenuController reference (mostly to save the game at the end).</summary>
         MainMenuController MainMenuController { get; set; }
 
+        /// <summary>Where the game will be displayed.</summary>
         GameWindow GameView { get; set; }
-        GridModel PlayerGrid { get; set; }
-        GridModel EnemyGrid { get; set; }
 
-        GameResult Result { get; set; }
+        /// <summary>Grid of the player 1 in memory.</summary>
+        GridModel PlayerGrid { get; set; }
+        /// <summary>Grid of the player 2 in memory.</summary>
+        GridModel EnemyGrid { get; set; }
+        
 
         /// <summary>Warn the host controller that we are ready. (Client and Host)</summary>
         void SetReady();
+
+        void ChangeGameState(GameState state);
 
         /// <summary>Process the player hit pre-actions. (Client and Host)</summary>
         /// <param name="pos"></param>
@@ -49,13 +67,16 @@ namespace BatailleNavale.Controller
 
     public enum GameState
     {
+        /// <summary>Players choose their grid layout.</summary>
         PlayersChooseBoatsLayout,
+        /// <summary>Player 1 turn.</summary>
         Player1Turn,
+        /// <summary>Player 2 turn.</summary>
         Player2Turn,
+        /// <summary>The game has ended. Players can now safely quit the window. The game chat may stlil be enabled.</summary>
         GameEnded
     }
 
-    [Flags]
     public enum GameResult
     {
         LocalPlayerWon,

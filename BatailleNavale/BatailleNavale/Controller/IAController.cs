@@ -10,8 +10,9 @@ namespace BatailleNavale.Controller
 {
     public class IAController
     {
+        public IAModel IAModel;
+
         private SingleplayerGameController GameController;
-        private IAModel IAModel;
 
         public IAController(SingleplayerGameController controller, IAModel.Difficulty difficulty)
         {
@@ -29,11 +30,12 @@ namespace BatailleNavale.Controller
             Random rng = new Random();
             int offsetX;
             int offsetY;
+#pragma warning disable
             int direction = 0;
+#pragma warning restore
 
             if (GameController.PlayerGrid.Hits.Count == 0) {
-                switch (IAModel.Difficulty_)
-                {
+                switch (IAModel.Difficulty_) {
                     default:
                     case IAModel.Difficulty.None:
                     case IAModel.Difficulty.Easy:
@@ -44,11 +46,11 @@ namespace BatailleNavale.Controller
                         target = new Vector2(rng.Next(3, GridModel.SizeX - 3), rng.Next(3, GridModel.SizeY - 3));
                         break;
                 }
-                
+
                 return target;
             }
 
-            List<Vector2> latestHits = GameController.PlayerGrid.Hits;
+            List<Hit> latestHits = GameController.PlayerGrid.Hits;
             latestHits.Reverse();
 
             //IA Logic...
@@ -56,28 +58,24 @@ namespace BatailleNavale.Controller
                 default:
                 case IAModel.Difficulty.None:
                     do {
-                        target = new Vector2(rng.Next(0, GridModel.SizeX - 1), rng.Next(0, GridModel.SizeY - 1));
+                        target = new Vector2(rng.Next(0, GridModel.SizeX), rng.Next(0, GridModel.SizeY));
                     } while (GameController.PlayerGrid.HitExists(target));
                     break;
                 case IAModel.Difficulty.Easy:
-                    if (GameController.PlayerGrid.BoatExists(latestHits[1]) && GameController.PlayerGrid.BoatExists(latestHits[0]))
-                    {
-                        offsetX = (int)latestHits[0].X - (int)latestHits[1].X;
-                        offsetY = (int)latestHits[0].Y - (int)latestHits[1].Y;
-                        target = new Vector2(latestHits[0].X + offsetX, latestHits[0].Y + offsetY);
+                    if (GameController.PlayerGrid.BoatExists(latestHits[1].Position) && GameController.PlayerGrid.BoatExists(latestHits[0].Position)) {
+                        offsetX = (int)latestHits[0].Position.X - (int)latestHits[1].Position.X;
+                        offsetY = (int)latestHits[0].Position.Y - (int)latestHits[1].Position.Y;
+                        target = new Vector2(latestHits[0].Position.X + offsetX, latestHits[0].Position.Y + offsetY);
 
-                    } else if (GameController.PlayerGrid.BoatExists(latestHits[1]) && !GameController.PlayerGrid.BoatExists(latestHits[0]))
-                    {//TODO : Change offsets via direction
+                    } else if (GameController.PlayerGrid.BoatExists(latestHits[1].Position) && !GameController.PlayerGrid.BoatExists(latestHits[0].Position)) {//TODO : Change offsets via direction
                         offsetX = 0;
                         offsetY = 0;
-                            target = new Vector2(latestHits[1].X + offsetX, latestHits[1].Y + offsetY);
-                    } 
-                        if (GameController.PlayerGrid.BoatExists(latestHits[0])) {
-                        target = new Vector2(latestHits[0].X + 1, latestHits[0].Y); //TODO: Needs improvement
-                    } else
-                    {
-                        do
-                        {
+                        target = new Vector2(latestHits[1].Position.X + offsetX, latestHits[1].Position.Y + offsetY);
+                    }
+                    if (GameController.PlayerGrid.BoatExists(latestHits[0].Position)) {
+                        target = new Vector2(latestHits[0].Position.X + 1, latestHits[0].Position.Y); //TODO: Needs improvement
+                    } else {
+                        do {
                             target = new Vector2(rng.Next(0, GridModel.SizeX - 1), rng.Next(0, GridModel.SizeY - 1));
                         } while (GameController.PlayerGrid.HitExists(target));
                     }

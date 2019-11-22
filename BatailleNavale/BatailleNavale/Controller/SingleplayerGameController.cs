@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using BatailleNavale.View;
 using System.Numerics;
 using BatailleNavale.Model;
+using BatailleNavale.View;
 using System.Diagnostics;
 
 namespace BatailleNavale.Controller
 {
     public class SingleplayerGameController : IGameController
     {
-        public GameState GameState { get; set; }
+        public GameMode GameMode { get => GameMode.Singleplayer; set { } }
+        public bool? Host { get => null; set { } }
+        public Player LocalPlayer { get => Player.Player1; set { } }
+        public GameState GameState { get => GameState.PlayersChooseBoatsLayout; set { } }
 
         public MainMenuController MainMenuController { get; set; }
 
@@ -22,26 +23,21 @@ namespace BatailleNavale.Controller
         public GridModel PlayerGrid { get; set; }
         public GridModel EnemyGrid { get; set; }
 
-        public GameResult Result { get; set; }
+        public GameResult Result { get => GameResult.Interupted; set { } }
 
-        private Stopwatch DuractionSW;
-        private int playerHits = 0;
-        private int enemyHits = 0;
+        private Stopwatch DurationSW;
 
         public SingleplayerGameController(MainMenuController mainMenuController, IAModel.Difficulty difficulty)
         {
-            GameView = new GameWindow(this);
-            GameView.Show();
-
             MainMenuController = mainMenuController;
-            GameState = GameState.PlayersChooseBoatsLayout;
             IAController = new IAController(this, difficulty);
             PlayerGrid = new GridModel();
             EnemyGrid = new GridModel();
 
-            DuractionSW = new Stopwatch();
+            DurationSW = new Stopwatch();
 
-            Result = GameResult.Interupted;
+            GameView = new GameWindow(this);
+            GameView.Show();
         }
 
         /// <summary>
@@ -54,8 +50,7 @@ namespace BatailleNavale.Controller
         /// <param name="name"></param>
         public void CreateBoat(Player playerTeam, Vector2 pos, int size, BoatModel.Orientation orientation, int boatTypeId = -1)
         {
-            BoatModel boat = new BoatModel(pos, size, orientation);
-            boat.BoatTypeId = boatTypeId;
+            BoatModel boat = new BoatModel(pos, size, orientation, boatTypeId);
 
             if (playerTeam == Player.Player1)
                 PlayerGrid.Boats.Add(boat);
@@ -104,7 +99,7 @@ namespace BatailleNavale.Controller
         /// </summary>
         public void SetReady()
         {
-            DuractionSW.Start();
+            DurationSW.Start();
             ChangeGameState(GameState.Player1Turn);
         }
 
@@ -199,15 +194,21 @@ namespace BatailleNavale.Controller
 
         public void QuitGame(GameResult result)
         {
-            DuractionSW.Stop();
+            DurationSW.Stop();
 
             if (result != GameResult.Interupted) {
 
                 GameData game = new GameData
                 {
+                    GameMode = GameMode.Singleplayer,
                     Result = result,
-                    Score = playerHits,
-                    Duration = DuractionSW.Elapsed
+
+                    LocalPlayerBoats = PlayerGrid.Boats,
+                    EnemyBoats = EnemyGrid.Boats,
+                    LocalPlayerHits = PlayerGrid.Hits,
+                    EnemyHits = EnemyGrid.Hits,
+                    
+                    Duration = DurationSW.Elapsed
                 };
 
                 MainMenuController.RegisterGame(game);
@@ -229,12 +230,12 @@ namespace BatailleNavale.Controller
             Console.WriteLine($"playerDestroyed: {playerDestroyedBoats}/{PlayerGrid.Boats.Count} enemyDestroyed: {enemyDestroyedBoats}/{EnemyGrid.Boats.Count}");
 
             if (playerDestroyedBoats == PlayerGrid.Boats.Count) {
-                who = Player.Player1;
+                who = Player.Player2;
                 gameWon = true;
             }
 
             if (enemyDestroyedBoats == EnemyGrid.Boats.Count) {
-                who = Player.Player2;
+                who = Player.Player1;
                 gameWon = true;
             }
 
@@ -252,8 +253,13 @@ namespace BatailleNavale.Controller
             if (EnemyGrid.HitExists(pos))
                 throw new Exception();
 
-            EnemyGrid.Hits.Add(pos);
-            playerHits++;
+            Hit hit = new Hit
+            {
+                CurrentDateTime = DateTime.Now,
+                Position = pos
+            };
+
+            EnemyGrid.Hits.Add(hit);
 
             if (IsGameWon(out Player player)) {
                 won = player;
@@ -272,8 +278,13 @@ namespace BatailleNavale.Controller
             if (PlayerGrid.HitExists(pos))
                 throw new Exception();
 
-            PlayerGrid.Hits.Add(pos);
-            enemyHits++;
+            Hit hit = new Hit
+            {
+                CurrentDateTime = DateTime.Now,
+                Position = pos
+            };
+
+            PlayerGrid.Hits.Add(hit);
 
             if (IsGameWon(out Player player)) {
                 won = player;

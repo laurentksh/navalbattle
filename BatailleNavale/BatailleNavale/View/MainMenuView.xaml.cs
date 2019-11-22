@@ -35,11 +35,27 @@ namespace BatailleNavale.View
             MultiplayerBtn.IsEnabled = false;
             GameSettingsGB.Visibility = Visibility.Hidden;
 
+            //Display difficulties
             foreach (string item in Enum.GetNames(typeof(IAModel.Difficulty)))
                 DifficultyCB.Items.Add(item);
 
             if (DifficultyCB.Items.Count > 0)
                 DifficultyCB.SelectedIndex = 0;
+
+            //Display boat amounts
+            foreach (int item in Enumerable.Range(1, 8)) {
+                ComboBoxItem cbItem = new ComboBoxItem();
+
+                cbItem.Content = item;
+                cbItem.Tag = item;
+
+                if (item == 5) {
+                    cbItem.Content = "5 - Default";
+                    BoatAmountCB.SelectedItem = cbItem;
+                }
+
+                BoatAmountCB.Items.Add(item);
+            }
 
             //Button blink animation (TODO: Improve)
             DoubleAnimation da = new DoubleAnimation();
@@ -86,6 +102,27 @@ namespace BatailleNavale.View
             };
 
             controller.NewGame(settings);
+        }
+
+        private void ChangeProfilePic_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+
+            dialog.Multiselect = false;
+            dialog.DefaultExt = ".png";
+            dialog.Filter = "PNG Files (*.png)|*.png|JPEG Files (*.jpg)|*.jpg|*.jpeg|*.jpe|*.jif|*.jfif|*.jfi | GIF Files (*.gif)";
+
+            bool? result = dialog.ShowDialog(this);
+
+            if (result.HasValue && result.Value) {
+                controller.ChangeProfilePicture(dialog.FileName);
+            }
+        }
+
+        private void ResetProfilePic_Click(object sender, RoutedEventArgs e)
+        {
+            controller.UserDataModel.ResetProfilePicture();
+            controller.RefreshUserData();
         }
 
         private void SettingsBtn_Click(object sender, RoutedEventArgs e)

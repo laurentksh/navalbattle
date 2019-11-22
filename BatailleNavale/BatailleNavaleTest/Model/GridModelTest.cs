@@ -32,7 +32,7 @@ namespace BatailleNavaleTest.Model
         {
             GridModel gridModel = new GridModel();
 
-            gridModel.Hits.Add(new Vector2(rnd.Next(GridModel.SizeX), rnd.Next(GridModel.SizeY)));
+            gridModel.Hits.Add(new Hit() { Position = new Vector2(rnd.Next(GridModel.SizeX), rnd.Next(GridModel.SizeY)) });
         }
 
         [TestMethod]
@@ -44,24 +44,24 @@ namespace BatailleNavaleTest.Model
             Vector2 boatPos2 = new Vector2(rnd.Next(), rnd.Next());
             Vector2 boatPos3 = new Vector2(rnd.Next(), rnd.Next());
 
-            BoatModel boatRnd = new BoatModel(boatPos1, rnd.Next(BoatModel.MaxSize), (BoatModel.Orientation)rnd.Next(0, 1));
-            BoatModel boatSize3Hor = new BoatModel(boatPos2, 3, BoatModel.Orientation.Horizontal);
-            BoatModel boatSize4Ver = new BoatModel(boatPos3, 4, BoatModel.Orientation.Vertical);
+            BoatModel boatRnd = new BoatModel(boatPos1, rnd.Next(BoatModel.MaxSize), (BoatModel.Orientation)rnd.Next(0, 1), -1);
+            BoatModel boatSize3Hor = new BoatModel(boatPos2, 3, BoatModel.Orientation.Horizontal, -1);
+            BoatModel boatSize4Ver = new BoatModel(boatPos3, 4, BoatModel.Orientation.Vertical, -1);
 
 
             gridModel.Boats.AddRange(new BoatModel[] { boatRnd, boatSize3Hor, boatSize4Ver });
 
             // Basic test
-            Assert.IsTrue(gridModel.BoatExists(boatPos1));
-            Assert.IsFalse(gridModel.HitExists(new Vector2(rnd.Next((int)boatPos1.X), rnd.Next())));
+            Assert.IsTrue(gridModel.BoatExists(boatPos1), "boatPos1");
+            Assert.IsFalse(gridModel.HitExists(new Vector2(rnd.Next((int)boatPos1.X), rnd.Next())), "Random1");
 
             // Advanced horizontal test
-            Assert.IsTrue(gridModel.BoatExists(boatPos2));
-            Assert.IsTrue(gridModel.BoatExists(new Vector2(boatPos2.X + 1, boatPos2.Y)));
+            Assert.IsTrue(gridModel.BoatExists(boatPos2), "boatPos2");
+            Assert.IsTrue(gridModel.BoatExists(new Vector2(boatPos2.X + 1, boatPos2.Y)), "Random2");
 
             // Advanced vertical test
-            Assert.IsTrue(gridModel.BoatExists(boatPos3));
-            Assert.IsTrue(gridModel.BoatExists(new Vector2(boatPos3.X, boatPos3.Y + 3)));
+            Assert.IsTrue(gridModel.BoatExists(boatPos3), "boatPos3");
+            Assert.IsTrue(gridModel.BoatExists(new Vector2(boatPos3.X, boatPos3.Y + 3)), "Random3");
         }
 
         [TestMethod]
@@ -69,13 +69,16 @@ namespace BatailleNavaleTest.Model
         {
             GridModel gridModel = new GridModel();
 
-            Vector2 hit = new Vector2(rnd.Next(), rnd.Next());
+            Hit hit = new Hit
+            {
+                Position = new Vector2(rnd.Next(), rnd.Next())
+            };
 
             gridModel.Hits.Add(hit);
 
-            Assert.IsTrue(gridModel.HitExists(hit));
-            
-            Assert.IsFalse(gridModel.HitExists(new Vector2(rnd.Next((int)hit.X), rnd.Next())));
+            Assert.IsTrue(gridModel.HitExists(hit.Position));
+
+            Assert.IsFalse(gridModel.HitExists(new Vector2(rnd.Next((int)hit.Position.X), rnd.Next())));
         }
     }
 }

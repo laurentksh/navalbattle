@@ -7,6 +7,11 @@ using BatailleNavale.View;
 using BatailleNavale.Model;
 using System.IO;
 using System.Windows;
+using System.Windows.Media.Imaging;
+using System.Drawing;
+using System.Windows.Media;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 
 namespace BatailleNavale.Controller
 {
@@ -28,7 +33,7 @@ namespace BatailleNavale.Controller
                     UserDataModel = UserDataLoader.Load(UserDataFilePath);
                 } catch (Exception) {
                     MessageBox.Show("An error occured while loading the user data.");
-                    ResetSettings();
+                    ResetSettings(true, true);
                 }
             } else {
                 UserDataModel = new UserDataModel();
@@ -37,7 +42,7 @@ namespace BatailleNavale.Controller
             MainMenuView = new MainMenuWindow(this);
 
             MainMenuView.Show();
-            RefreshStats();
+            RefreshUserData();
         }
 
         public void NewGame(GameSettings settings)
@@ -50,6 +55,7 @@ namespace BatailleNavale.Controller
                 gameController.IAController.GenerateBoats(settings.BoatCount);
             } else {
                 //TODO: Make a MultiplayerClientGameController and MultiplayerHostGameController.
+                var n = new NetworkCommunication();
             }
 
             SetInGame(true);
@@ -62,56 +68,105 @@ namespace BatailleNavale.Controller
             MainMenuView.SingleplayerBtn.IsEnabled = !inGame;
             MainMenuView.MultiplayerBtn.IsEnabled = false; //!inGame; //Always disabled until a MPGameController is created.
 
-            RefreshStats();
+            RefreshUserData();
         }
 
         public void RegisterGame(GameData game)
         {
             UserDataModel.Games.Add(game);
-            RefreshStats();
+            RefreshUserData();
         }
 
-        public void RefreshStats()
+        public void RefreshUserData()
         {
-            Console.WriteLine("a " + UserDataModel.Games.Count);
+            DisplayProfilePicture();
 
-            string totalPlayTime;
-            if (UserDataModel.GetTotalPlayTime().TotalHours > 1d)
-                totalPlayTime = $"Total play time: {UserDataModel.GetTotalPlayTime().Hours}h";
-            else
-                totalPlayTime = $"Total play time: {UserDataModel.GetTotalPlayTime().Minutes}m";
+            MainMenuView.PlayerInfo.Content = UserDataModel.ToString();
+        }
 
-            MainMenuView.PlayerInfo.Content =
-                $"{UserDataModel.Username}" + Environment.NewLine +
-                $"Wins: {UserDataModel.GetWins()}" + Environment.NewLine +
-                $"Loses: {UserDataModel.GetLoses()}" + Environment.NewLine +
-                totalPlayTime + Environment.NewLine +
-                $"Best score: {UserDataModel.GetBestScore()}";
+        public void DisplayProfilePicture()
+        {
+            BitmapImage pic = new BitmapImage();
+            pic.BeginInit();
+            pic.StreamSource = new MemoryStream(Convert.FromBase64String(UserDataModel.ProfilePicture));
+            pic.EndInit();
+
+            Console.WriteLine($"{Image.FromStream(pic.StreamSource).Width}x{Image.FromStream(pic.StreamSource).Height}");
+            MainMenuView.PlayerPicture.Source = pic;
+        }
+
+        public void ChangeProfilePicture(string path)
+        {
+            Image img = Image.FromFile(path);
+
+            Image resizedImg = ResizeImage(img, 96, 96);
+            img.Dispose();
+
+            UserDataModel.SetProfilePicture(resizedImg);
+            RefreshUserData();
+
+            resizedImg.Dispose();
+        }
+
+        /// <summary>
+        /// Resize the image to the specified width and height.
+        /// </summary>
+        /// <param name="image">The image to resize.</param>
+        /// <param name="newWidth">The width to resize to.</param>
+        /// <param name="newHeight">The height to resize to.</param>
+        /// <returns>The resized image.</returns>
+        private static Image ResizeImage(Image image, int newWidth, int newHeight) //TODO: Fix (Doesn't do shit ?)
+        {
+            try {
+                var destRect = new Rectangle(0, 0, newWidth, newHeight);
+                var destImage = new Bitmap(newWidth, newHeight);
+
+                destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+                using (var graphics = Graphics.FromImage(destImage)) {
+                    graphics.CompositingMode = CompositingMode.SourceCopy;
+                    graphics.CompositingQuality = CompositingQuality.HighQuality;
+                    graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    graphics.SmoothingMode = SmoothingMode.HighQuality;
+                    graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                    using (var wrapMode = new ImageAttributes()) {
+                        wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                        graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                    }
+                }
+
+                return destImage;
+            }catch (Exception ex) {
+                Console.WriteLine(ex);
+            }
+
+            return null;
         }
 
         /// <summary>
         /// Reset the user settings/data.
         /// </summary>
-        /// <param name="fileExists">If true, will act like the user is using this app for the first time.</param>
+        /// <param name="showWelcomeWindow">If true, will act like the user is using this app for the first time.</param>
         /// <param name="resetAllSettings">If true, will also reset all game stats.</param>
-        public void ResetSettings(bool fileExists = false, bool resetAllSettings = false)
+        public void ResetSettings(bool showWelcomeWindow = false, bool resetAllSettings = false)
         {
             if (resetAllSettings)
                 UserDataModel = new UserDataModel();
-            else {
+            else
                 UserDataModel.ResetStats();
-            }
 
             SaveSettings(out _);
 
-            if (fileExists) {
-                ShowSettings();
+            if (showWelcomeWindow) {
+                ShowSettings(); //Temp
             }
         }
 
         public void ShowSettings()
         {
             SettingsWindow view = new SettingsWindow(this);
+
             view.Show();
         }
 
@@ -124,6 +179,7 @@ namespace BatailleNavale.Controller
                 return false;
             }
 
+            RefreshUserData();
             exception = null;
             return true;
         }
