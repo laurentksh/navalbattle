@@ -41,7 +41,7 @@ namespace BatailleNavale.Controller
             NetCom.PlayerReadyEvent += NetCom_PlayerReadyEvent;
             NetCom.GameEndedEvent += NetCom_GameEndedEvent;
             NetCom.EnemyHitEvent += NetCom_EnemyHitEvent;
-            NetCom.IllegalHitEvent += NetCom_IllegalHitEvent;
+            NetCom.HitResultEvent += NetCom_HitResultEvent;
             NetCom.ChatMessageReceivedEvent += NetCom_ChatMessageReceivedEvent;
 
             MainMenuController = mainMenuController;
@@ -123,12 +123,16 @@ namespace BatailleNavale.Controller
             GameView.WriteInChat(content, NetCom.RemotePlayer.PlayerData.Username);
         }
 
-        private void NetCom_IllegalHitEvent(Hit hit)
+        private void NetCom_HitResultEvent(MessagesData.HitResultData hitData)
         {
-            //Fired if the the last hit we did is illegal.
-            GameView.RemoveHit(hit.Position, Player.Player1);
-            EnemyGrid.Hits.Remove(hit);
-            GameView.WriteInChat($"Hit at position {hit.Position} was illegal and has been removed.");
+            if (hitData.IsIllegal) {
+                //Fired if the the last hit we did is illegal.
+                GameView.RemoveHit(hitData.hit.Position, Player.Player1);
+                EnemyGrid.Hits.Remove(hitData.hit);
+                GameView.WriteInChat($"Hit at position {hitData.hit.Position} was illegal and has been removed.");
+            } else {
+                GameView.DisplayHit(hitData.hit.Position, Player.Player2, hitData.BoatExists);
+            }
         }
 
         private void NetCom_EnemyHitEvent(Hit hit)
@@ -157,7 +161,28 @@ namespace BatailleNavale.Controller
 
         public void ChangeGameState(GameState state)
         {
-            throw new NotImplementedException();
+            GameState = state;
+
+            switch (GameState) {
+                case GameState.PlayersChooseBoatsLayout:
+                    GameView.SetGridIsEnabled(Player.Player1, true);
+                    GameView.SetGridIsEnabled(Player.Player2, false);
+                    break;
+                case GameState.Player1Turn:
+                    GameView.SetGridIsEnabled(Player.Player1, false);
+                    GameView.SetGridIsEnabled(Player.Player2, true);
+                    break;
+                case GameState.Player2Turn:
+                    GameView.SetGridIsEnabled(Player.Player1, true);
+                    GameView.SetGridIsEnabled(Player.Player2, false);
+                    break;
+                case GameState.GameEnded:
+                    GameView.SetGridIsEnabled(Player.Player1, false);
+                    GameView.SetGridIsEnabled(Player.Player2, false);
+                    break;
+                default:
+                    break;
+            }
         }
 
         public void ProcessPlayerHit(Vector2 pos)
@@ -167,10 +192,10 @@ namespace BatailleNavale.Controller
 
             NetCom.Hit(new Hit(pos));
 
-            GameView.DisplayHit(pos, Player.Player2); //Display a hitmarker where the player clicked.
-
-            GameView.SetGridIsEnabled(Player.Player1, true);
-            GameView.SetGridIsEnabled(Player.Player2, false);
+            if (EnemyGrid.BoatExists(pos))
+                GameView.DisplayHit(pos, Player.Player2, true); //Display a hitmarker where the player clicked.
+            else
+                GameView.DisplayHit(pos, Player.Player2, false);
 
             ChangeGameState(GameState.Player2Turn);
         }

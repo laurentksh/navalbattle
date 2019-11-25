@@ -42,7 +42,7 @@ namespace BatailleNavale.Net
         public event GameEndedDelegate GameEndedEvent;
         public event ChatMessageReceivedDelegate ChatMessageReceivedEvent;
         public event EnemyHitDelegate EnemyHitEvent;
-        public event IllegalHitDelegate IllegalHitEvent;
+        public event HitResultDelegate HitResultEvent;
 
         public delegate void PlayerJoinedDelegate();
         public delegate void PlayerLeftDelegate();
@@ -52,7 +52,7 @@ namespace BatailleNavale.Net
         public delegate void GameEndedDelegate(MessagesData.GameEndedData data);
         public delegate void ChatMessageReceivedDelegate(string content);
         public delegate void EnemyHitDelegate(Hit hit);
-        public delegate void IllegalHitDelegate(Hit hit);
+        public delegate void HitResultDelegate(MessagesData.HitResultData hitResult);
 
         
 
@@ -77,6 +77,12 @@ namespace BatailleNavale.Net
 
             FirstTimeDataReceivedEvent += NetworkCommunicator_FirstTimeDataReceivedEvent;
             DataReceivedEvent += NetworkCommunicator_DataReceivedEvent;
+            ConnectedEvent += NetworkCommunicator_ConnectedEvent;
+        }
+
+        private void NetworkCommunicator_ConnectedEvent()
+        {
+            RemotePlayer.HeartbeatTask = Task.Run(Heartbeat);
         }
 
         public async Task Connect(IPEndPoint endpoint, ProtocolType protocol, SimpleUserDataModel userData)
@@ -85,20 +91,47 @@ namespace BatailleNavale.Net
             {
                 Socket = new Socket(endpoint.AddressFamily, SocketType.Stream, protocol),
                 Buffer = new ArraySegment<byte>(new byte[8192]),
-                ReceiveTask = Listen(),
-                HeartbeatTask = Heartbeat()
             };
 
             await RemotePlayer.Socket.ConnectAsync(endpoint);
             RemotePlayer.ReceiveTask = Task.Run(Receive);
+            await RemotePlayer.ReceiveTask.ConfigureAwait(false);
 
+            Console.WriteLine("a");
             NetworkMessage message = new NetworkMessage(NetworkMessage.MessageType.Connect, userData);
             await SendAsync(message);
+            Console.WriteLine("b");
+        }
+
+        public async Task CreateServer(int port, ProtocolType protocolType, bool useUPnP)
+        {
+            IPEndPoint local = new IPEndPoint(IPAddress.Any, port);
+
+            Console.WriteLine($"Hosting on {local} with protocol {protocolType}. UPNP: {useUPnP}");
+
+            if (useUPnP) {
+                try {
+                    await NatRegisterPort(port);
+                } catch (Exception) {
+                    throw new NatDeviceNotFoundException();
+                }
+            }
+
+            listener = new Socket(local.AddressFamily, SocketType.Stream, protocolType);
+            listener.Bind(local);
+            listener.Listen(1);
+
+            listeningForIncommingRequests = true;
+
+            await Listen().ConfigureAwait(false);
         }
 
         private void NetworkCommunicator_FirstTimeDataReceivedEvent(string data)
         {
             NetworkMessage message = JsonConvert.DeserializeObject<NetworkMessage>(data);
+
+            if (message.Type != NetworkMessage.MessageType.ConnectAccepted)
+                return;
 
             RemotePlayer.Authentified = true;
 
@@ -146,8 +179,8 @@ namespace BatailleNavale.Net
                 case NetworkMessage.MessageType.PlayerHit:
                     EnemyHitEvent((Hit)value);
                     break;
-                case NetworkMessage.MessageType.IllegalHit:
-                    IllegalHitEvent((Hit)value);
+                case NetworkMessage.MessageType.HitResult:
+                    HitResultEvent((MessagesData.HitResultData)value);
                     break;
                 case NetworkMessage.MessageType.ConnectAccepted:
                     ConnectedEvent();
@@ -155,29 +188,6 @@ namespace BatailleNavale.Net
                 default:
                     break;
             }
-        }
-
-        public async Task CreateServer(int port, ProtocolType protocolType, bool useUPnP)
-        {
-            IPEndPoint local = new IPEndPoint(IPAddress.Any, port);
-
-            Console.WriteLine($"Hosting on {local} with protocol {protocolType}. UPNP: {useUPnP}");
-
-            if (useUPnP) {
-                try {
-                    await NatRegisterPort(port);
-                } catch (Exception) {
-                    throw new NatDeviceNotFoundException();
-                }
-            }
-
-            listener = new Socket(local.AddressFamily, SocketType.Stream, protocolType);
-            listener.Bind(local);
-            listener.Listen(1);
-
-            listeningForIncommingRequests = true;
-
-            await Listen().ConfigureAwait(false);
         }
 
         public void SendChatMessage(string content)
@@ -389,7 +399,7 @@ namespace BatailleNavale.Net
             /// <summary>Send a hit request.</summary>
             PlayerHit,
             /// <summary>A hit sent is invalid.</summary>
-            IllegalHit,
+            HitResult,
         }
     }
 
@@ -399,6 +409,13 @@ namespace BatailleNavale.Net
         {
             public GameResult Result;
             public List<BoatModel> EnemyBoats;
+        }
+
+        public struct HitResultData
+        {
+            public bool IsIllegal;
+            public Hit hit;
+            public bool BoatExists;
         }
     }
 }

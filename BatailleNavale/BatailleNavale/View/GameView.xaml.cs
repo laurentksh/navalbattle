@@ -26,6 +26,7 @@ namespace BatailleNavale.View
         private IGameController controller;
 
         private static BitmapImage hitImage;
+        private static BitmapImage hitInWaterImage;
         private Vector2 updatingBoat;
 
         /// <summary>Contains all drawn boats on the UI (both grids)</summary>
@@ -34,6 +35,7 @@ namespace BatailleNavale.View
         static GameWindow()
         {
             hitImage = new BitmapImage(new Uri("./Resources/Hit.png", UriKind.RelativeOrAbsolute));
+            hitInWaterImage = new BitmapImage(new Uri("./Resources/HitInWater.png", UriKind.RelativeOrAbsolute));
         }
 
         private List<Rectangle> playerGridBackground;
@@ -156,13 +158,17 @@ namespace BatailleNavale.View
             DrawnBoats.Add(new UIBoat(boat, boatRect, playerGrid));
         }
 
-        public void DisplayHit(Vector2 pos, Player playerGrid)
+        public void DisplayHit(Vector2 pos, Player playerGrid, bool boatExists)
         {
             Rectangle hitRect = new Rectangle
             {
-                Fill = new ImageBrush(hitImage),
                 Stretch = Stretch.Fill
             };
+
+            if (boatExists)
+                hitRect.Fill = new ImageBrush(hitImage);
+            else
+                hitRect.Fill = new ImageBrush(hitInWaterImage);
 
             Grid.SetColumn(hitRect, (int)pos.X);
             Grid.SetRow(hitRect, (int)pos.Y);
@@ -205,8 +211,9 @@ namespace BatailleNavale.View
 
         public void SetAllBoatsForPlayerVisibility(bool visible, Player player = Player.Player2)
         {
-            Console.WriteLine("SetAllBoatsForPlayerVisibility");
+            Console.WriteLine("SetAllBoatsForPlayerVisibility " + visible + player);
             foreach (UIBoat boat in DrawnBoats) {
+                Console.WriteLine(boat.Player);
                 if (boat.Player == player) {
                     if (visible)
                         boat.BoatUIElement.Visibility = Visibility.Visible;
@@ -255,10 +262,18 @@ namespace BatailleNavale.View
         {
             foreach (UIBoat item in DrawnBoats) {
                 if (item.Boat == boat && item.Player == playerGrid) {
-                    if (item.Player == Player.Player1)
-                        PlayerGrid.Children.Remove(item.BoatUIElement);
-                    else
-                        EnemyGrid.Children.Remove(item.BoatUIElement);
+                    if (item.Player == Player.Player1) {
+
+                        PlayerGrid.Dispatcher.Invoke(() =>
+                        {
+                            PlayerGrid.Children.Remove(item.BoatUIElement);
+                        });
+                    } else {
+                        EnemyGrid.Dispatcher.Invoke(() =>
+                        {
+                            EnemyGrid.Children.Remove(item.BoatUIElement);
+                        });
+                    }
 
                     DrawnBoats.Remove(item);
                     return;

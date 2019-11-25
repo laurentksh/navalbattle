@@ -40,11 +40,9 @@ namespace BatailleNavale.Controller
 
             DurationSW = new Stopwatch();
 
-            
+
             GameView = new GameWindow(this);
             GameView.Show();
-
-            GameView.SetAllBoatsForPlayerVisibility(false, Player.Player2);
         }
 
         /// <summary>
@@ -117,7 +115,7 @@ namespace BatailleNavale.Controller
         public void ChangeGameState(GameState state)
         {
             GameState = state;
-            
+
             switch (GameState) {
                 case GameState.PlayersChooseBoatsLayout:
                     GameView.SetGridIsEnabled(Player.Player1, true);
@@ -153,13 +151,15 @@ namespace BatailleNavale.Controller
             if (winner != Player.None)
                 return;
 
-            GameView.DisplayHit(pos, Player.Player2); //Display a hitmarker where the player clicked.
+            if (EnemyGrid.BoatExists(pos))
+                GameView.DisplayHit(pos, Player.Player2, true); //Display a hitmarker where the player clicked.
+            else
+                GameView.DisplayHit(pos, Player.Player2, false);
 
             Random rnd = new Random();
-
-            await Task.Delay(rnd.Next(1000, 4000)); //Fake that the AI is processing the next hit.
-
             ChangeGameState(GameState.Player2Turn);
+
+            await Task.Delay(rnd.Next(500, 3000)); //Fake that the AI is processing the next hit.
 
             ProcessIAHit(IAController.GetNextTarget());
         }
@@ -177,7 +177,10 @@ namespace BatailleNavale.Controller
             if (winner != Player.None)
                 return;
 
-            GameView.DisplayHit(pos, Player.Player1);
+            if (PlayerGrid.BoatExists(pos))
+                GameView.DisplayHit(pos, Player.Player1, true);
+            else
+                GameView.DisplayHit(pos, Player.Player1, false);
 
             await Task.Delay(2000);
 

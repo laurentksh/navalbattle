@@ -42,7 +42,6 @@ namespace BatailleNavale.Controller
             NetCom.PlayerLeftEvent += NetCom_PlayerLeftEvent;
             NetCom.PlayerReadyEvent += NetCom_PlayerReadyEvent;
             NetCom.EnemyHitEvent += NetCom_EnemyHitEvent;
-            NetCom.IllegalHitEvent += NetCom_IllegalHitEvent;
             NetCom.ChatMessageReceivedEvent += NetCom_ChatMessageReceivedEvent;
 
             RemoteIsReady = false;
@@ -124,15 +123,16 @@ namespace BatailleNavale.Controller
             GameView.WriteInChat(content, NetCom.RemotePlayer.PlayerData.Username);
         }
 
-        private void NetCom_IllegalHitEvent(Hit hit)
-        {
-            throw new NotImplementedException();
-        }
-
         private void NetCom_EnemyHitEvent(Hit hit)
         {
-            GameView.RemoveHit(hit.Position, Player.Player2);
-            EnemyGrid.Hits.Add(hit);
+            MessagesData.HitResultData data = new MessagesData.HitResultData
+            {
+                BoatExists = PlayerGrid.BoatExists(hit.Position),
+                hit = hit,
+                IsIllegal = PlayerGrid.HitExists(hit)
+            };
+
+            PlayerGrid.Hits.Add(hit);
         }
 
         private void NetCom_PlayerReadyEvent(List<BoatModel> boats)

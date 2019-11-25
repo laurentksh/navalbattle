@@ -55,6 +55,7 @@ namespace BatailleNavale.Controller
 
                 gameController.GenerateBoats();
                 gameController.IAController.GenerateBoats(settings.BoatCount);
+                gameController.GameView.SetAllBoatsForPlayerVisibility(false, Player.Player2);
             } else {
                 MultiplayerView mpView = new MultiplayerView(this);
                 mpView.Show();
