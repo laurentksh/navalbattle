@@ -68,8 +68,14 @@ namespace BatailleNavale.Controller
             try {
                 MultiplayerHostGameController controller = new MultiplayerHostGameController(this);
                 await controller.NetCom.CreateServer(UserDataModel.Port, NetworkCommunicator.PROTOCOL_TYPE, UserDataModel.UseUPnP);
+            } catch (Open.Nat.NatDeviceNotFoundException ex) {
+                MessageBox.Show("Could not connect to the NAT device. If you keep getting this error, try the following steps:" + Environment.NewLine +
+                    "1. Connect to another network." + Environment.NewLine +
+                    "2. Make sure your NAT device is connected properly." + Environment.NewLine +
+                    "3. Disable UPnP in the settings and create a static rule directly in your router.");
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message, "Fatal error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Console.WriteLine(ex);
             }
         }
 
@@ -77,9 +83,10 @@ namespace BatailleNavale.Controller
         {
             try {
                 MultiplayerClientGameController controller = new MultiplayerClientGameController(this);
-                await controller.NetCom.Connect(host, NetworkCommunicator.PROTOCOL_TYPE);
+                await controller.NetCom.Connect(host, NetworkCommunicator.PROTOCOL_TYPE, new SimpleUserDataModel(UserDataModel));
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message, "Fatal error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Console.WriteLine(ex);
             }
         }
 

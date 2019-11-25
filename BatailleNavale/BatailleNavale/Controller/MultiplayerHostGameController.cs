@@ -26,6 +26,7 @@ namespace BatailleNavale.Controller
         public GridModel EnemyGrid { get; set; }
 
         public NetworkCommunicator NetCom;
+        public bool RemoteIsReady;
 
         private Stopwatch DurationSW;
 
@@ -45,6 +46,8 @@ namespace BatailleNavale.Controller
             NetCom.IllegalHitEvent += NetCom_IllegalHitEvent;
             NetCom.ChatMessageReceivedEvent += NetCom_ChatMessageReceivedEvent;
 
+            RemoteIsReady = false;
+
             MainMenuController = mainMenuController;
             PlayerGrid = new GridModel();
             EnemyGrid = new GridModel();
@@ -53,11 +56,13 @@ namespace BatailleNavale.Controller
 
             GameView = new GameWindow(this);
             GameView.Show();
+
+            GameView.WriteInChat($"Hosting on {new IPEndPoint(IPAddress.Any, MainMenuController.UserDataModel.Port)} with protocol {NetworkCommunicator.PROTOCOL_TYPE}. UPNP: {MainMenuController.UserDataModel.UseUPnP}");
         }
 
         private void NetCom_ChatMessageReceivedEvent(string content)
         {
-            
+            GameView.WriteInChat(content, NetCom.RemotePlayer.PlayerData.Username);
         }
 
         private void NetCom_IllegalHitEvent(Hit hit)
@@ -67,10 +72,11 @@ namespace BatailleNavale.Controller
 
         private void NetCom_EnemyHitEvent(Hit hit)
         {
-            throw new NotImplementedException();
+            GameView.RemoveHit(hit.Position, Player.Player2);
+            EnemyGrid.Hits.Add(hit);
         }
 
-        private void NetCom_GameEndedEvent(GameResult result)
+        private void NetCom_GameEndedEvent(MessagesData.GameEndedData data)
         {
             throw new NotImplementedException();
         }
@@ -87,15 +93,20 @@ namespace BatailleNavale.Controller
 
         private void NetCom_PlayerJoinedEvent()
         {
-            throw new NotImplementedException();
+            GameView.WriteInChat($"Player \"{NetCom.RemotePlayer.PlayerData.Username}\" joined.");
         }
 
         public void SetReady()
         {
-            //TODO: Tell the other player we're ready.
+            if (RemoteIsReady) {
+                NetworkMessage message = new NetworkMessage(NetworkMessage.MessageType.GameReady, null);
 
-            DurationSW.Start();
-            ChangeGameState(GameState.Player1Turn);
+                NetCom.Send(message);
+                DurationSW.Start();
+                ChangeGameState(GameState.Player1Turn);
+            } else {
+                GameView.WriteInChat("The remote player isn't ready yet !");
+            }
         }
 
         public void ChangeGameState(GameState state)
@@ -131,17 +142,67 @@ namespace BatailleNavale.Controller
 
         public void GameWon(Player player)
         {
-            throw new NotImplementedException();
+            MessagesData.GameEndedData data = new MessagesData.GameEndedData
+            {
+                EnemyBoats = PlayerGrid.Boats
+            };
+
+            if (player == Player.Player1)
+                data.Result = GameResult.EnemyWon; //From host point of view !
+            else
+                data.Result = GameResult.LocalPlayerWon;
+
+            NetworkMessage message = new NetworkMessage(NetworkMessage.MessageType.GameEnded, data);
+            NetCom.Send(message);
         }
 
         public void PlayerHit(Vector2 pos, out Player winner)
         {
-            throw new NotImplementedException();
+            winner = Player.None;
+
+            if (EnemyGrid.HitExists(pos))
+                throw new Exception();
+
+            Hit hit = new Hit
+            {
+                CurrentDateTime = DateTime.Now,
+                Position = pos
+            };
+
+            EnemyGrid.Hits.Add(hit);
+
+            if (IsGameWon(out Player player)) {
+                winner = player;
+                GameWon(player);
+            }
+        }
+
+        public bool IsGameWon(out Player who)
+        {
+            bool gameWon = false;
+            who = Player.None;
+
+            int playerDestroyedBoats = PlayerGrid.GetDestroyedBoats().Count;
+            int enemyDestroyedBoats = EnemyGrid.GetDestroyedBoats().Count;
+
+            Console.WriteLine($"playerDestroyed: {playerDestroyedBoats}/{PlayerGrid.Boats.Count} enemyDestroyed: {enemyDestroyedBoats}/{EnemyGrid.Boats.Count}");
+
+            if (playerDestroyedBoats == PlayerGrid.Boats.Count) {
+                who = Player.Player2;
+                gameWon = true;
+            }
+
+            if (enemyDestroyedBoats == EnemyGrid.Boats.Count) {
+                who = Player.Player1;
+                gameWon = true;
+            }
+
+            return gameWon;
         }
 
         public void ProcessPlayerHit(Vector2 pos)
         {
-            throw new NotImplementedException();
+            PlayerHit(pos, out _);
         }
 
         public void QuitGame(GameResult result)
@@ -165,6 +226,9 @@ namespace BatailleNavale.Controller
                 };
 
                 MainMenuController.RegisterGame(game);
+            } else {
+                NetworkMessage message = new NetworkMessage(NetworkMessage.MessageType.Disconnect, null);
+                NetCom.Send(message);
             }
 
             MainMenuController.SetInGame(false);

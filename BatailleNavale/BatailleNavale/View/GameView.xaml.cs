@@ -38,6 +38,7 @@ namespace BatailleNavale.View
 
         private List<Rectangle> playerGridBackground;
         private List<Rectangle> enemyGridBackground;
+        private List<Rectangle> hits;
 
         public GameWindow(IGameController controller_)
         {
@@ -48,6 +49,7 @@ namespace BatailleNavale.View
             DrawnBoats = new List<UIBoat>();
             playerGridBackground = new List<Rectangle>();
             enemyGridBackground = new List<Rectangle>();
+            hits = new List<Rectangle>();
 
             QuitBtn.Visibility = Visibility.Hidden;
 
@@ -166,7 +168,20 @@ namespace BatailleNavale.View
             Grid.SetRow(hitRect, (int)pos.Y);
             Panel.SetZIndex(hitRect, 100);
 
+            hits.Add(hitRect);
             DrawRectangle(hitRect, pos, playerGrid);
+        }
+
+        public void RemoveHit(Vector2 pos, Player playerGrid)
+        {
+            foreach (Rectangle hit in hits) {
+                if ((int)hit.GetValue(Grid.ColumnProperty) == pos.X && (int)hit.GetValue(Grid.RowProperty) == pos.Y) {
+                    if (playerGrid == Player.Player1)
+                        PlayerGrid.Children.Remove(hit);
+                    else
+                        EnemyGrid.Children.Remove(hit);
+                }
+            }
         }
 
         public void SetGridIsEnabled(Player playerGrid, bool enabled)
@@ -190,6 +205,7 @@ namespace BatailleNavale.View
 
         public void SetAllBoatsForPlayerVisibility(bool visible, Player player = Player.Player2)
         {
+            Console.WriteLine("SetAllBoatsForPlayerVisibility");
             foreach (UIBoat boat in DrawnBoats) {
                 if (boat.Player == player) {
                     if (visible)
@@ -252,7 +268,7 @@ namespace BatailleNavale.View
             throw new Exception("Boat not found in specified grid."); //Not found
         }
 
-        public void WriteInChat(string content, string username = null)
+        public void WriteInChat(string content, string username = "System")
         {
             ChatContentTB.Text += $"[{DateTime.Now.Hour}:{DateTime.Now.Minute}] {username}: {content}" + Environment.NewLine;
         }
@@ -357,6 +373,12 @@ namespace BatailleNavale.View
 
                 e.Handled = true;
             }
+        }
+
+        private void ChatSendBtn_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+                ChatSendBtn_Click(sender, e);
         }
 
         private void ChatSendBtn_Click(object sender, RoutedEventArgs e)

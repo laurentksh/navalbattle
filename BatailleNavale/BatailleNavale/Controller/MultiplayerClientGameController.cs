@@ -37,6 +37,12 @@ namespace BatailleNavale.Controller
             Result = GameResult.Interupted;
 
             NetCom = new NetworkCommunicator();
+            NetCom.PlayerLeftEvent += NetCom_PlayerLeftEvent;
+            NetCom.PlayerReadyEvent += NetCom_PlayerReadyEvent;
+            NetCom.GameEndedEvent += NetCom_GameEndedEvent;
+            NetCom.EnemyHitEvent += NetCom_EnemyHitEvent;
+            NetCom.IllegalHitEvent += NetCom_IllegalHitEvent;
+            NetCom.ChatMessageReceivedEvent += NetCom_ChatMessageReceivedEvent;
 
             MainMenuController = mainMenuController;
             PlayerGrid = new GridModel();
@@ -44,8 +50,41 @@ namespace BatailleNavale.Controller
 
             DurationSW = new Stopwatch();
 
+
             GameView = new GameWindow(this);
             GameView.Show();
+
+            GameView.EnemyInfo.Content = string.Empty;
+            GameView.WriteInChat($"Connecting to a remote client...");
+        }
+
+        private void NetCom_ChatMessageReceivedEvent(string content)
+        {
+            GameView.WriteInChat(content, NetCom.RemotePlayer.PlayerData.Username);
+        }
+
+        private void NetCom_IllegalHitEvent(Hit hit)
+        {
+            //Fired if the the last hit we did is illegal.
+            GameView.RemoveHit(hit.Position, Player.Player1);
+            EnemyGrid.Hits.Remove(hit);
+            GameView.WriteInChat($"Hit at position {hit.Position} was illegal and has been removed.");
+        }
+
+        private void NetCom_EnemyHitEvent(Hit hit)
+        {
+            GameView.RemoveHit(hit.Position, Player.Player2);
+            EnemyGrid.Hits.Add(hit);
+        }
+
+        private void NetCom_PlayerReadyEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void NetCom_PlayerLeftEvent()
+        {
+            QuitGame(GameResult.Interupted);
         }
 
         public void SetReady()
@@ -53,7 +92,7 @@ namespace BatailleNavale.Controller
             DurationSW.Start();
             ChangeGameState(GameState.Player1Turn);
 
-            NetCom.SetReady();
+            NetCom.SetPlayerReady();
         }
 
         public void ChangeGameState(GameState state)
@@ -112,11 +151,37 @@ namespace BatailleNavale.Controller
                 };
 
                 MainMenuController.RegisterGame(game);
+
+                if (NetCom.Connected) {
+                    NetworkMessage message = new NetworkMessage(NetworkMessage.MessageType.Disconnect, null);
+                    NetCom.Send(message);
+                }
+            } else {
+                if (NetCom.Connected) {
+                    NetworkMessage message = new NetworkMessage(NetworkMessage.MessageType.Disconnect, null);
+                    NetCom.Send(message);
+                }
             }
 
             MainMenuController.SetInGame(false);
             MainMenuController.MainMenuView.Activate();
             GameView.Close();
+        }
+
+        private void NetCom_GameEndedEvent(MessagesData.GameEndedData data)
+        {
+            GameView.SetAllBoatsForPlayerVisibility(true, Player.Player2);
+
+            if (data.Result == GameResult.EnemyWon) {
+                Result = GameResult.EnemyWon;
+                GameView.GameWonLbl.Content = $"{NetCom.RemotePlayer.PlayerData.Username} won !";
+            } else {
+                Result = GameResult.LocalPlayerWon;
+                GameView.GameWonLbl.Content = $"{MainMenuController.UserDataModel.Username} won !";
+            }
+
+            GameView.GameWonLbl.Visibility = System.Windows.Visibility.Visible;
+            GameView.QuitBtn.Visibility = System.Windows.Visibility.Visible;
         }
     }
 }

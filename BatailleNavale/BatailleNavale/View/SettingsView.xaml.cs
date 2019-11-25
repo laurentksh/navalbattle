@@ -38,6 +38,7 @@ namespace BatailleNavale.View
         {
             controller.UserDataModel.Username = UsernameTB.Text;
             controller.UserDataModel.Port = Convert.ToInt32(HostPortTB.Text);
+            controller.UserDataModel.UseUPnP = EnableUPnPCB.IsChecked.Value;
 
             if (controller.SaveSettings(out Exception ex)) { //Save operation successful
                 MessageBox.Show("Settings saved successfully !", "Success", MessageBoxButton.OK, MessageBoxImage.Information);

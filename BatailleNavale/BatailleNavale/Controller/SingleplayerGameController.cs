@@ -117,7 +117,7 @@ namespace BatailleNavale.Controller
         public void ChangeGameState(GameState state)
         {
             GameState = state;
-            Console.WriteLine(state);
+            
             switch (GameState) {
                 case GameState.PlayersChooseBoatsLayout:
                     GameView.SetGridIsEnabled(Player.Player1, true);
@@ -154,9 +154,6 @@ namespace BatailleNavale.Controller
                 return;
 
             GameView.DisplayHit(pos, Player.Player2); //Display a hitmarker where the player clicked.
-
-            GameView.SetGridIsEnabled(Player.Player1, true);
-            GameView.SetGridIsEnabled(Player.Player2, false);
 
             Random rnd = new Random();
 
@@ -258,9 +255,9 @@ namespace BatailleNavale.Controller
         /// Method used by the view to process hits from the player.
         /// </summary>
         /// <param name="pos"></param>
-        public void PlayerHit(Vector2 pos, out Player won)
+        public void PlayerHit(Vector2 pos, out Player winner)
         {
-            won = Player.None;
+            winner = Player.None;
 
             if (EnemyGrid.HitExists(pos))
                 throw new Exception();
@@ -274,7 +271,7 @@ namespace BatailleNavale.Controller
             EnemyGrid.Hits.Add(hit);
 
             if (IsGameWon(out Player player)) {
-                won = player;
+                winner = player;
                 GameWon(player);
             }
         }

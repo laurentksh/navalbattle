@@ -16,7 +16,7 @@ namespace BatailleNavale.Model
         /// </summary>
         public UserDataModel()
         {
-            Username = "Player";
+            Username = Environment.UserName;
             ResetProfilePicture();
             Port = 9451;
             UseUPnP = true;

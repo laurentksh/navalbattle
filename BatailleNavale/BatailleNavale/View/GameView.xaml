@@ -80,7 +80,7 @@
             </Border>
             <Grid Margin="0,0,0,0" VerticalAlignment="Bottom">
                 <TextBox Name="ChatTB" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" Margin="0,4,0,2" Width="345" TextWrapping="Wrap" FontSize="20"/>
-                <Button Name="ChatSendBtn" Content="Send" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,4,0,2" Width="50" Height="30" Click="ChatSendBtn_Click"></Button>
+                <Button Name="ChatSendBtn" Content="Send" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,4,0,2" Width="50" Height="30" Click="ChatSendBtn_Click" Keyboard.KeyUp="ChatSendBtn_KeyUp"></Button>
             </Grid>
         </Grid>
     </Grid>
