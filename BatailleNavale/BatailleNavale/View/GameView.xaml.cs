@@ -86,7 +86,7 @@ namespace BatailleNavale.View
                     Grid.SetRow(filler, y);
                     Panel.SetZIndex(filler, 100);
 
-                    filler.MouseDown += Cell_Clicked;
+                    filler.MouseUp += Cell_MouseUp;
 
                     enemyGridBackground.Add(filler);
                 }
@@ -97,7 +97,7 @@ namespace BatailleNavale.View
                 SingleplayerGameController spController = (SingleplayerGameController)controller;
                 EnemyInfo.Content = "IA - " + spController.IAController.IAModel.Difficulty_;
             } else {
-
+                EnemyInfo.Content = "Waiting for a player to join...";
             }
         }
 
@@ -118,17 +118,22 @@ namespace BatailleNavale.View
             ImageBrush imageBrush = new ImageBrush(BoatModel.GetBoatImage(boat.BoatTypeId));
             imageBrush.Stretch = Stretch.Fill;
 
+            if (boat.Orientation_ == BoatModel.Orientation.Vertical) {
+                Matrix rotation = Matrix.Identity;
+                rotation.RotateAt(90, 0.5, 0.5);
+                imageBrush.RelativeTransform = new MatrixTransform(rotation);
+            }
+
             Rectangle boatRect = new Rectangle
             {
-                Fill = imageBrush,
-                //Fill = Brushes.Black,
-
+                Fill = imageBrush
             };
 
             Panel.SetZIndex(boatRect, 1);
 
             if (playerGrid == Player.Player1) {
-                boatRect.MouseMove += Boat_MouseMove;
+                boatRect.MouseMove += Boat_MouseMove; //Move the boat
+                boatRect.MouseUp += BoatRect_MouseUp; //Change orientation
 
                 PlayerGrid.Children.Add(boatRect);
             } else {
@@ -159,7 +164,7 @@ namespace BatailleNavale.View
 
             Grid.SetColumn(hitRect, (int)pos.X);
             Grid.SetRow(hitRect, (int)pos.Y);
-            Panel.SetZIndex(hitRect, 10);
+            Panel.SetZIndex(hitRect, 100);
 
             DrawRectangle(hitRect, pos, playerGrid);
         }
@@ -183,7 +188,7 @@ namespace BatailleNavale.View
             }
         }
 
-        public void SetllBoatsForPlayerVisibility(bool visible, Player player = Player.Player2)
+        public void SetAllBoatsForPlayerVisibility(bool visible, Player player = Player.Player2)
         {
             foreach (UIBoat boat in DrawnBoats) {
                 if (boat.Player == player) {
@@ -195,7 +200,7 @@ namespace BatailleNavale.View
             }
         }
 
-        private void Cell_Clicked(object sender, MouseButtonEventArgs e)
+        private void Cell_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (controller.GameState != GameState.Player1Turn)
                 return;
@@ -208,6 +213,26 @@ namespace BatailleNavale.View
             Console.WriteLine($"X: {columnIndex} Y: {rowIndex}; ColSpan: {Grid.GetColumnSpan(element)} RowSpan: {Grid.GetRowSpan(element)}");
 
             controller.ProcessPlayerHit(new Vector2(columnIndex, rowIndex));
+        }
+
+        private void BoatRect_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (controller.GameState != GameState.PlayersChooseBoatsLayout)
+                return;
+
+            Rectangle element = e.Source as Rectangle;
+
+            int columnIndex = Grid.GetColumn(element);
+            int rowIndex = Grid.GetRow(element);
+
+            foreach (var boat in DrawnBoats) {
+                if (boat.Player == Player.Player1 && boat.Boat.Position == new Vector2(columnIndex, rowIndex)) {
+                    if (boat.Boat.Orientation_ == BoatModel.Orientation.Horizontal)
+                        boat.UpdateOrientation(BoatModel.Orientation.Vertical);
+                    else
+                        boat.UpdateOrientation(BoatModel.Orientation.Horizontal);
+                }
+            }
         }
 
         public void RemoveBoat(BoatModel boat, Player playerGrid) //Warning: 2 boats on each grid with the same position will probably crash this
@@ -225,6 +250,11 @@ namespace BatailleNavale.View
             }
 
             throw new Exception("Boat not found in specified grid."); //Not found
+        }
+
+        public void WriteInChat(string content, string username = null)
+        {
+            ChatContentTB.Text += $"[{DateTime.Now.Hour}:{DateTime.Now.Minute}] {username}: {content}" + Environment.NewLine;
         }
 
         public struct UIBoat
@@ -245,6 +275,27 @@ namespace BatailleNavale.View
                 Boat.Position = pos;
                 BoatUIElement.SetValue(Grid.ColumnProperty, (int)pos.X);
                 BoatUIElement.SetValue(Grid.RowProperty, (int)pos.Y);
+            }
+
+            public void UpdateOrientation(BoatModel.Orientation newOrientation)
+            {
+                if (Boat.Size > 1 && newOrientation != Boat.Orientation_) {
+                    if (newOrientation == BoatModel.Orientation.Horizontal) {
+                        Matrix rotation = Matrix.Identity;
+                        rotation.RotateAt(0, 0.5, 0.5);
+                        BoatUIElement.Fill.RelativeTransform = new MatrixTransform(rotation);
+                    } else {
+                        Matrix rotation = Matrix.Identity;
+                        rotation.RotateAt(90, 0.5, 0.5);
+                        BoatUIElement.Fill.RelativeTransform = new MatrixTransform(rotation);
+                    }
+
+                    object rowSpan = BoatUIElement.GetValue(Grid.RowSpanProperty);
+                    object colSpan = BoatUIElement.GetValue(Grid.ColumnSpanProperty);
+                    BoatUIElement.SetValue(Grid.ColumnSpanProperty, rowSpan);
+                    BoatUIElement.SetValue(Grid.RowSpanProperty, colSpan);
+                }
+                Boat.Orientation_ = newOrientation;
             }
         }
 
@@ -306,6 +357,23 @@ namespace BatailleNavale.View
 
                 e.Handled = true;
             }
+        }
+
+        private void ChatSendBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (controller.GameMode == GameMode.Multiplayer) {
+                if (controller.Host.Value) {
+                    MultiplayerHostGameController mpHost = (MultiplayerHostGameController)controller;
+
+                    mpHost.NetCom.SendChatMessage(ChatTB.Text);
+                } else {
+                    MultiplayerClientGameController mpHost = (MultiplayerClientGameController)controller;
+
+                    mpHost.NetCom.SendChatMessage(ChatTB.Text);
+                }
+            }
+
+            WriteInChat(ChatTB.Text, controller.MainMenuController.UserDataModel.Username);
         }
 
         private void Window_Closed(object sender, EventArgs e)

@@ -7,39 +7,87 @@ using BatailleNavale.View;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using BatailleNavale.Net;
 
 namespace BatailleNavale.Controller
 {
     public class MultiplayerHostGameController : IGameController
     {
-        public GameMode GameMode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool? Host { get => true; set { } }
-        public Player LocalPlayer { get => Player.Player1; set { } }
-        public GameState GameState { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public GameResult Result { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public GameMode GameMode { get; set; }
+        public bool? Host { get; set; }
+        public GameState GameState { get; set; }
+        public GameResult Result { get; set; }
 
-        public MainMenuController MainMenuController { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public MainMenuController MainMenuController { get; set; }
 
-        public GameWindow GameView { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public GameWindow GameView { get; set; }
 
-        public GridModel PlayerGrid { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public GridModel EnemyGrid { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public GridModel PlayerGrid { get; set; }
+        public GridModel EnemyGrid { get; set; }
+
+        public NetworkCommunicator NetCom;
 
         private Stopwatch DurationSW;
 
         public MultiplayerHostGameController(MainMenuController mainMenuController)
         {
-            MainMenuController = mainMenuController;
+            GameMode = GameMode.Multiplayer;
+            Host = true;
             GameState = GameState.PlayersChooseBoatsLayout;
+            Result = GameResult.Interupted;
+
+            NetCom = new NetworkCommunicator();
+            NetCom.PlayerJoinedEvent += NetCom_PlayerJoinedEvent;
+            NetCom.PlayerLeftEvent += NetCom_PlayerLeftEvent;
+            NetCom.PlayerReadyEvent += NetCom_PlayerReadyEvent;
+            NetCom.GameEndedEvent += NetCom_GameEndedEvent;
+            NetCom.EnemyHitEvent += NetCom_EnemyHitEvent;
+            NetCom.IllegalHitEvent += NetCom_IllegalHitEvent;
+            NetCom.ChatMessageReceivedEvent += NetCom_ChatMessageReceivedEvent;
+
+            MainMenuController = mainMenuController;
             PlayerGrid = new GridModel();
             EnemyGrid = new GridModel();
 
             DurationSW = new Stopwatch();
 
-            Result = GameResult.Interupted;
-
             GameView = new GameWindow(this);
             GameView.Show();
+        }
+
+        private void NetCom_ChatMessageReceivedEvent(string content)
+        {
+            
+        }
+
+        private void NetCom_IllegalHitEvent(Hit hit)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void NetCom_EnemyHitEvent(Hit hit)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void NetCom_GameEndedEvent(GameResult result)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void NetCom_PlayerReadyEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void NetCom_PlayerLeftEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void NetCom_PlayerJoinedEvent()
+        {
+            throw new NotImplementedException();
         }
 
         public void SetReady()
@@ -98,7 +146,30 @@ namespace BatailleNavale.Controller
 
         public void QuitGame(GameResult result)
         {
-            throw new NotImplementedException();
+            DurationSW.Stop();
+
+            if (result != GameResult.Interupted) {
+
+                GameData game = new GameData
+                {
+                    GameMode = GameMode,
+                    Result = result,
+
+                    LocalPlayerBoats = PlayerGrid.Boats,
+                    EnemyBoats = EnemyGrid.Boats,
+                    LocalPlayerHits = PlayerGrid.Hits,
+                    EnemyHits = EnemyGrid.Hits,
+
+                    Chat = GameView.ChatContentTB.Text,
+                    Duration = DurationSW.Elapsed
+                };
+
+                MainMenuController.RegisterGame(game);
+            }
+
+            MainMenuController.SetInGame(false);
+            MainMenuController.MainMenuView.Activate();
+            GameView.Close();
         }
     }
 }

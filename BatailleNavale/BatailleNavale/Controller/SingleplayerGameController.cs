@@ -10,10 +10,9 @@ namespace BatailleNavale.Controller
 {
     public class SingleplayerGameController : IGameController
     {
-        public GameMode GameMode { get => GameMode.Singleplayer; set { } }
-        public bool? Host { get => null; set { } }
-        public Player LocalPlayer { get => Player.Player1; set { } }
-        public GameState GameState { get => GameState.PlayersChooseBoatsLayout; set { } }
+        public GameMode GameMode { get; set; }
+        public bool? Host { get; set; }
+        public GameState GameState { get; set; }
 
         public MainMenuController MainMenuController { get; set; }
 
@@ -23,12 +22,17 @@ namespace BatailleNavale.Controller
         public GridModel PlayerGrid { get; set; }
         public GridModel EnemyGrid { get; set; }
 
-        public GameResult Result { get => GameResult.Interupted; set { } }
+        public GameResult Result { get; set; }
 
         private Stopwatch DurationSW;
 
         public SingleplayerGameController(MainMenuController mainMenuController, IAModel.Difficulty difficulty)
         {
+            GameMode = GameMode.Singleplayer;
+            Host = null;
+            GameState = GameState.PlayersChooseBoatsLayout;
+            Result = GameResult.Interupted;
+
             MainMenuController = mainMenuController;
             IAController = new IAController(this, difficulty);
             PlayerGrid = new GridModel();
@@ -36,8 +40,11 @@ namespace BatailleNavale.Controller
 
             DurationSW = new Stopwatch();
 
+            
             GameView = new GameWindow(this);
             GameView.Show();
+
+            GameView.SetAllBoatsForPlayerVisibility(false, Player.Player2);
         }
 
         /// <summary>
@@ -68,29 +75,32 @@ namespace BatailleNavale.Controller
         {
             List<Vector2> usedPositions = new List<Vector2>();
             Random rnd = new Random();
-
-
             List<BoatPreset> boatPresets = BoatModel.GetBoatPresets();
 
             for (int i = 0; i < boatPresets.Count; i++) {
                 BoatPreset boatPreset = boatPresets[i];
-                Vector2 pos;
-                BoatModel.Orientation orientation;
-                int size = boatPreset.boatSize;
-                orientation = (BoatModel.Orientation)rnd.Next(0, 1);
+                Vector2 pos = Vector2.Zero;
+                BoatModel.Orientation orientation = (BoatModel.Orientation)rnd.Next(2);
+                int X = rnd.Next(GridModel.SizeX);
+                int Y = rnd.Next(GridModel.SizeY);
 
                 do {
-                    pos = new Vector2(rnd.Next(GridModel.SizeX), rnd.Next(GridModel.SizeY));
+                    if (orientation == BoatModel.Orientation.Horizontal)
+                        X = rnd.Next(GridModel.SizeX - boatPreset.boatSize);
+                    else
+                        Y = rnd.Next(GridModel.SizeY - boatPreset.boatSize);
+
+                    pos = new Vector2(X, Y);
                 } while (usedPositions.Contains(pos));
 
-                for (int i2 = 0; i2 < size; i2++) {
+                for (int i2 = 0; i2 < boatPreset.boatSize; i2++) {
                     if (orientation == BoatModel.Orientation.Horizontal)
                         usedPositions.Add(new Vector2(pos.X + i2, pos.Y));
                     else
                         usedPositions.Add(new Vector2(pos.X, pos.Y + i2));
                 }
 
-                CreateBoat(Player.Player1, pos, size, orientation, boatPreset.boatId);
+                CreateBoat(Player.Player1, pos, boatPreset.boatSize, orientation, boatPreset.boatId);
             }
         }
 
@@ -100,13 +110,14 @@ namespace BatailleNavale.Controller
         public void SetReady()
         {
             DurationSW.Start();
+
             ChangeGameState(GameState.Player1Turn);
         }
 
         public void ChangeGameState(GameState state)
         {
             GameState = state;
-
+            Console.WriteLine(state);
             switch (GameState) {
                 case GameState.PlayersChooseBoatsLayout:
                     GameView.SetGridIsEnabled(Player.Player1, true);
@@ -142,7 +153,7 @@ namespace BatailleNavale.Controller
             if (winner != Player.None)
                 return;
 
-            GameView.DisplayHit(pos, Player.Player2); //Add a hitmarker
+            GameView.DisplayHit(pos, Player.Player2); //Display a hitmarker where the player clicked.
 
             GameView.SetGridIsEnabled(Player.Player1, true);
             GameView.SetGridIsEnabled(Player.Player2, false);
@@ -179,7 +190,7 @@ namespace BatailleNavale.Controller
         public void GameWon(Player player)
         {
             ChangeGameState(GameState.GameEnded);
-            GameView.SetllBoatsForPlayerVisibility(true, Player.Player2);
+            GameView.SetAllBoatsForPlayerVisibility(true, Player.Player2);
 
             GameView.GameWonLbl.Content = $"{player} won !";
             GameView.GameWonLbl.Visibility = System.Windows.Visibility.Visible;
@@ -200,14 +211,15 @@ namespace BatailleNavale.Controller
 
                 GameData game = new GameData
                 {
-                    GameMode = GameMode.Singleplayer,
+                    GameMode = GameMode,
                     Result = result,
 
                     LocalPlayerBoats = PlayerGrid.Boats,
                     EnemyBoats = EnemyGrid.Boats,
                     LocalPlayerHits = PlayerGrid.Hits,
                     EnemyHits = EnemyGrid.Hits,
-                    
+
+                    Chat = GameView.ChatContentTB.Text,
                     Duration = DurationSW.Elapsed
                 };
 
@@ -216,7 +228,7 @@ namespace BatailleNavale.Controller
 
             MainMenuController.SetInGame(false);
             MainMenuController.MainMenuView.Activate();
-            GameView.Hide();
+            GameView.Close();
         }
 
         public bool IsGameWon(out Player who)

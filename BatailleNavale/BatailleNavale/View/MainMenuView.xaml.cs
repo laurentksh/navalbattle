@@ -32,7 +32,6 @@ namespace BatailleNavale.View
 
             InitializeComponent();
 
-            MultiplayerBtn.IsEnabled = false;
             GameSettingsGB.Visibility = Visibility.Hidden;
 
             //Display difficulties
@@ -41,21 +40,6 @@ namespace BatailleNavale.View
 
             if (DifficultyCB.Items.Count > 0)
                 DifficultyCB.SelectedIndex = 0;
-
-            //Display boat amounts
-            foreach (int item in Enumerable.Range(1, 8)) {
-                ComboBoxItem cbItem = new ComboBoxItem();
-
-                cbItem.Content = item;
-                cbItem.Tag = item;
-
-                if (item == 5) {
-                    cbItem.Content = "5 - Default";
-                    BoatAmountCB.SelectedItem = cbItem;
-                }
-
-                BoatAmountCB.Items.Add(item);
-            }
 
             //Button blink animation (TODO: Improve)
             DoubleAnimation da = new DoubleAnimation();
@@ -83,7 +67,7 @@ namespace BatailleNavale.View
                     GameMode = GameMode.Singleplayer
                 };
 
-                controller.NewGame(settings);
+                controller.Play(settings);
             } else {
                 gameSettingsDisplayed = true;
                 GameSettingsGB.Visibility = Visibility.Visible;
@@ -101,7 +85,7 @@ namespace BatailleNavale.View
                 Difficulty = IAModel.Difficulty.None
             };
 
-            controller.NewGame(settings);
+            controller.Play(settings);
         }
 
         private void ChangeProfilePic_Click(object sender, RoutedEventArgs e)

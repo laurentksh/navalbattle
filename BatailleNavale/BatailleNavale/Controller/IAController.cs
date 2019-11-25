@@ -26,6 +26,8 @@ namespace BatailleNavale.Controller
         /// <returns></returns>
         public Vector2 GetNextTarget()
         {
+            //NOTE: maxValue is exclusive !!
+
             Vector2 target = Vector2.Zero;
             Random rng = new Random();
             int offsetX;
@@ -38,10 +40,14 @@ namespace BatailleNavale.Controller
                 switch (IAModel.Difficulty_) {
                     default:
                     case IAModel.Difficulty.None:
-                    case IAModel.Difficulty.Easy:
                         target = new Vector2(rng.Next(0, GridModel.SizeX), rng.Next(0, GridModel.SizeY));
                         break;
+                    case IAModel.Difficulty.Easy:
+                        target = new Vector2(rng.Next(0, GridModel.SizeX - 5), rng.Next(0, GridModel.SizeY - 5));
+                        break;
                     case IAModel.Difficulty.Normal:
+                        target = new Vector2(rng.Next(0, GridModel.SizeX - 4), rng.Next(0, GridModel.SizeY - 4));
+                        break;
                     case IAModel.Difficulty.Hard:
                         target = new Vector2(rng.Next(3, GridModel.SizeX - 3), rng.Next(3, GridModel.SizeY - 3));
                         break;
@@ -81,8 +87,14 @@ namespace BatailleNavale.Controller
                     }
                     break;
                 case IAModel.Difficulty.Normal:
+                    do {
+                        target = new Vector2(rng.Next(0, GridModel.SizeX), rng.Next(0, GridModel.SizeY));
+                    } while (GameController.PlayerGrid.HitExists(target));
                     break;
                 case IAModel.Difficulty.Hard:
+                    do {
+                        target = new Vector2(rng.Next(0, GridModel.SizeX), rng.Next(0, GridModel.SizeY));
+                    } while (GameController.PlayerGrid.HitExists(target));
                     break;
             }
 
@@ -97,16 +109,32 @@ namespace BatailleNavale.Controller
         {
             List<Vector2> usedPositions = new List<Vector2>();
             Random rnd = new Random();
-            Vector2 pos;
+            List<BoatPreset> boatPresets = BoatModel.GetBoatPresets();
 
-            for (int i = 0; i < boatCount; i++) { //Random boat generation for now, will change later.
+            for (int i = 0; i < boatPresets.Count; i++) {
+                BoatPreset boatPreset = boatPresets[i];
+                Vector2 pos = Vector2.Zero;
+                BoatModel.Orientation orientation = (BoatModel.Orientation)rnd.Next(2);
+                int X = rnd.Next(GridModel.SizeX);
+                int Y = rnd.Next(GridModel.SizeY);
+
                 do {
-                    pos = new Vector2(rnd.Next(GridModel.SizeX), rnd.Next(GridModel.SizeY));
+                    if (orientation == BoatModel.Orientation.Horizontal)
+                        X = rnd.Next(GridModel.SizeX - boatPreset.boatSize);
+                    else
+                        Y = rnd.Next(GridModel.SizeY - boatPreset.boatSize);
+
+                    pos = new Vector2(X, Y);
                 } while (usedPositions.Contains(pos));
 
-                usedPositions.Add(pos);
+                for (int i2 = 0; i2 < boatPreset.boatSize; i2++) {
+                    if (orientation == BoatModel.Orientation.Horizontal)
+                        usedPositions.Add(new Vector2(pos.X + i2, pos.Y));
+                    else
+                        usedPositions.Add(new Vector2(pos.X, pos.Y + i2));
+                }
 
-                GameController.CreateBoat(Player.Player2, pos, rnd.Next(BoatModel.MaxSize), (BoatModel.Orientation)rnd.Next(1));
+                GameController.CreateBoat(Player.Player2, pos, boatPreset.boatSize, orientation, boatPreset.boatId);
             }
         }
     }

@@ -70,9 +70,23 @@ namespace BatailleNavale.Model
         public DateTime CurrentDateTime;
         public Vector2 Position;
 
+        /// <summary>
+        /// Create a new Hit object with Position set to Vector2.Zero and CurrentDT to DateTime.Now.
+        /// </summary>
         public Hit()
         {
             CurrentDateTime = DateTime.Now;
+            Position = Vector2.Zero;
+        }
+
+        /// <summary>
+        /// Create a new hit object with the specified position and CurentDT set to DateTime.Now.
+        /// </summary>
+        /// <param name="pos"></param>
+        public Hit(Vector2 pos)
+        {
+            CurrentDateTime = DateTime.Now;
+            Position = pos;
         }
     }
 }

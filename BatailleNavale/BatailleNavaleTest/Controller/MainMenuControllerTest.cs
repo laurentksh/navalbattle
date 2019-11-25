@@ -21,7 +21,7 @@ namespace BatailleNavaleTest.Controller
                 Difficulty = IAModel.Difficulty.None
             };
 
-            controller.NewGame(settings);
+            controller.Play(settings);
         }
 
         [TestMethod]

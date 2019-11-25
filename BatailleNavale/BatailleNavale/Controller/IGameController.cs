@@ -15,9 +15,6 @@ namespace BatailleNavale.Controller
 
         bool? Host { get; set; }
 
-        /// <summary>Who is the local player ?</summary>
-        Player LocalPlayer { get; set; }
-
         /// <summary>The current state of  the game.</summary>
         GameState GameState { get; set; }
 
@@ -40,6 +37,8 @@ namespace BatailleNavale.Controller
         /// <summary>Warn the host controller that we are ready. (Client and Host)</summary>
         void SetReady();
 
+        /// <summary></summary>
+        /// <param name="state"></param>
         void ChangeGameState(GameState state);
 
         /// <summary>Process the player hit pre-actions. (Client and Host)</summary>
@@ -58,9 +57,7 @@ namespace BatailleNavale.Controller
         /// <param name="player"></param>
         void GameWon(Player player);
 
-        /// <summary>
-        /// Quit game and signal the main menu controller that the game ended.
-        /// </summary>
+        /// <summary>Quit game and signal the main menu controller that the game ended. (Client and Host)</summary>
         /// <param name="result"></param>
         void QuitGame(GameResult result);
     }

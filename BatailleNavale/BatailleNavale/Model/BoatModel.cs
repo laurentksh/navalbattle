@@ -46,6 +46,24 @@ namespace BatailleNavale.Model
             return hitsCount;
         }
 
+        public List<Vector2> CalculateUsedCells()
+        {
+            List<Vector2> used = new List<Vector2>();
+
+            for (int i = 0; i < Size; i++) {
+                Vector2 v = Vector2.Zero;
+
+                if (Orientation_ == Orientation.Horizontal)
+                    v = new Vector2(Position.X + i, Position.Y);
+                else
+                    v = new Vector2(Position.X, Position.Y + i);
+
+                used.Add(v);
+            }
+
+            return used;
+        }
+
         /// <summary>
         /// 
         /// </summary>

@@ -12,6 +12,8 @@ using System.Drawing;
 using System.Windows.Media;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Net;
+using BatailleNavale.Net;
 
 namespace BatailleNavale.Controller
 {
@@ -45,7 +47,7 @@ namespace BatailleNavale.Controller
             RefreshUserData();
         }
 
-        public void NewGame(GameSettings settings)
+        public void Play(GameSettings settings)
         {
             if (settings.GameMode == GameMode.Singleplayer) {
                 SingleplayerGameController gameController = new SingleplayerGameController(this, settings.Difficulty);
@@ -54,11 +56,31 @@ namespace BatailleNavale.Controller
                 gameController.GenerateBoats();
                 gameController.IAController.GenerateBoats(settings.BoatCount);
             } else {
-                //TODO: Make a MultiplayerClientGameController and MultiplayerHostGameController.
-                var n = new NetworkCommunication();
+                MultiplayerView mpView = new MultiplayerView(this);
+                mpView.Show();
             }
 
             SetInGame(true);
+        }
+
+        public async void HostGame()
+        {
+            try {
+                MultiplayerHostGameController controller = new MultiplayerHostGameController(this);
+                await controller.NetCom.CreateServer(UserDataModel.Port, NetworkCommunicator.PROTOCOL_TYPE, UserDataModel.UseUPnP);
+            } catch (Exception ex) {
+                MessageBox.Show(ex.Message, "Fatal error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        public async void JoinGame(IPEndPoint host)
+        {
+            try {
+                MultiplayerClientGameController controller = new MultiplayerClientGameController(this);
+                await controller.NetCom.Connect(host, NetworkCommunicator.PROTOCOL_TYPE);
+            } catch (Exception ex) {
+                MessageBox.Show(ex.Message, "Fatal error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public void SetInGame(bool inGame_)
@@ -66,7 +88,7 @@ namespace BatailleNavale.Controller
             inGame = inGame_;
 
             MainMenuView.SingleplayerBtn.IsEnabled = !inGame;
-            MainMenuView.MultiplayerBtn.IsEnabled = false; //!inGame; //Always disabled until a MPGameController is created.
+            MainMenuView.MultiplayerBtn.IsEnabled = !inGame;
 
             RefreshUserData();
         }
@@ -91,7 +113,6 @@ namespace BatailleNavale.Controller
             pic.StreamSource = new MemoryStream(Convert.FromBase64String(UserDataModel.ProfilePicture));
             pic.EndInit();
 
-            Console.WriteLine($"{Image.FromStream(pic.StreamSource).Width}x{Image.FromStream(pic.StreamSource).Height}");
             MainMenuView.PlayerPicture.Source = pic;
         }
 
@@ -137,7 +158,7 @@ namespace BatailleNavale.Controller
                 }
 
                 return destImage;
-            }catch (Exception ex) {
+            } catch (Exception ex) {
                 Console.WriteLine(ex);
             }
 

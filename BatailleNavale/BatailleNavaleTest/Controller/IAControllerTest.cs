@@ -2,7 +2,7 @@
 using BatailleNavale.Controller;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace BatailleNavaleTest.Controllers
+namespace BatailleNavaleTest.Controller
 {
     [TestClass]
     public class IAControllerTest
@@ -20,7 +20,7 @@ namespace BatailleNavaleTest.Controllers
         [TestMethod]
         public void GetNextTargetTest()
         {
-            controller.GetNextTarget();
+            Assert.IsInstanceOfType(controller.GetNextTarget(), typeof(System.Numerics.Vector2));
         }
     }
 }

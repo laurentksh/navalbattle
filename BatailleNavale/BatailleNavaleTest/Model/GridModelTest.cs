@@ -24,7 +24,7 @@ namespace BatailleNavaleTest.Model
             byte[] buffer = new byte[8];
             rnd.NextBytes(buffer);
 
-            gridModel.Boats.Add(new BoatModel(new Vector2(rnd.Next(0, GridModel.SizeX), rnd.Next(0, GridModel.SizeX)), rnd.Next(BoatModel.MaxSize), (BoatModel.Orientation)rnd.Next(0, 1)));
+            gridModel.Boats.Add(new BoatModel(new Vector2(rnd.Next(0, GridModel.SizeX), rnd.Next(0, GridModel.SizeX)), rnd.Next(BoatModel.MaxSize), (BoatModel.Orientation)rnd.Next(2)));
         }
 
         [TestMethod]
@@ -44,7 +44,7 @@ namespace BatailleNavaleTest.Model
             Vector2 boatPos2 = new Vector2(rnd.Next(), rnd.Next());
             Vector2 boatPos3 = new Vector2(rnd.Next(), rnd.Next());
 
-            BoatModel boatRnd = new BoatModel(boatPos1, rnd.Next(BoatModel.MaxSize), (BoatModel.Orientation)rnd.Next(0, 1), -1);
+            BoatModel boatRnd = new BoatModel(boatPos1, rnd.Next(BoatModel.MaxSize), (BoatModel.Orientation)rnd.Next(2), -1);
             BoatModel boatSize3Hor = new BoatModel(boatPos2, 3, BoatModel.Orientation.Horizontal, -1);
             BoatModel boatSize4Ver = new BoatModel(boatPos3, 4, BoatModel.Orientation.Vertical, -1);
 

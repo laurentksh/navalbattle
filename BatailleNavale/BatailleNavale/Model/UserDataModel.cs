@@ -18,8 +18,8 @@ namespace BatailleNavale.Model
         {
             Username = "Player";
             ResetProfilePicture();
-            Protocol = ProtocolType.Tcp;
             Port = 9451;
+            UseUPnP = true;
 
             Games = new List<GameData>();
         }
@@ -31,7 +31,7 @@ namespace BatailleNavale.Model
 
         //Server settings
         public int Port;
-        public ProtocolType Protocol;
+        public bool UseUPnP;
 
         public List<GameData> Games;
 
@@ -208,6 +208,7 @@ namespace BatailleNavale.Model
         /// <summary>Hits on Player2's grid.</summary>
         public List<Hit> EnemyHits;
 
+        public string Chat;
         public TimeSpan Duration;
 
         public override string ToString()

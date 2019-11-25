@@ -7,38 +7,42 @@ using BatailleNavale.View;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using BatailleNavale.Net;
 
 namespace BatailleNavale.Controller
 {
     public class MultiplayerClientGameController : IGameController
     {
-        public GameMode GameMode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool? Host { get => false; set { } }
-        public Player LocalPlayer { get => Player.Player2; set { } }
-        public GameState GameState { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public GameResult Result { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public GameMode GameMode { get; set; }
+        public bool? Host { get; set; }
+        public GameState GameState { get; set; }
+        public GameResult Result { get; set; }
 
-        public MainMenuController MainMenuController { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public MainMenuController MainMenuController { get; set; }
 
-        public GameWindow GameView { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public GameWindow GameView { get; set; }
 
-        public GridModel PlayerGrid { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public GridModel EnemyGrid { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public GridModel PlayerGrid { get; set; }
+        public GridModel EnemyGrid { get; set; }
 
-        public Socket HostConnection;
+        public NetworkCommunicator NetCom;
 
         private Stopwatch DurationSW;
 
         public MultiplayerClientGameController(MainMenuController mainMenuController)
         {
-            MainMenuController = mainMenuController;
+            GameMode = GameMode.Multiplayer;
+            Host = false;
             GameState = GameState.PlayersChooseBoatsLayout;
+            Result = GameResult.Interupted;
+
+            NetCom = new NetworkCommunicator();
+
+            MainMenuController = mainMenuController;
             PlayerGrid = new GridModel();
             EnemyGrid = new GridModel();
 
             DurationSW = new Stopwatch();
-
-            Result = GameResult.Interupted;
 
             GameView = new GameWindow(this);
             GameView.Show();
@@ -46,36 +50,35 @@ namespace BatailleNavale.Controller
 
         public void SetReady()
         {
-            //TODO: Tell the other player we're ready.
-
             DurationSW.Start();
             ChangeGameState(GameState.Player1Turn);
+
+            NetCom.SetReady();
         }
 
         public void ChangeGameState(GameState state)
         {
-            GameState = state;
+            throw new NotImplementedException();
+        }
 
-            switch (GameState) {
-                case GameState.PlayersChooseBoatsLayout:
-                    GameView.SetGridIsEnabled(Player.Player1, true);
-                    GameView.SetGridIsEnabled(Player.Player2, false);
-                    break;
-                case GameState.Player1Turn:
-                    GameView.SetGridIsEnabled(Player.Player1, false);
-                    GameView.SetGridIsEnabled(Player.Player2, true);
-                    break;
-                case GameState.Player2Turn:
-                    GameView.SetGridIsEnabled(Player.Player1, true);
-                    GameView.SetGridIsEnabled(Player.Player2, false);
-                    break;
-                case GameState.GameEnded:
-                    GameView.SetGridIsEnabled(Player.Player1, false);
-                    GameView.SetGridIsEnabled(Player.Player2, false);
-                    break;
-                default:
-                    break;
-            }
+        public void ProcessPlayerHit(Vector2 pos)
+        {
+            if (GameState != GameState.GameEnded)
+                return;
+
+            NetCom.Hit(new Hit(pos));
+
+            GameView.DisplayHit(pos, Player.Player2); //Display a hitmarker where the player clicked.
+
+            GameView.SetGridIsEnabled(Player.Player1, true);
+            GameView.SetGridIsEnabled(Player.Player2, false);
+
+            ChangeGameState(GameState.Player2Turn);
+        }
+
+        public void PlayerHit(Vector2 pos, out Player winner)
+        {
+            throw new NotImplementedException();
         }
 
         public void EnemyHit(Vector2 pos, out Player winner)
@@ -88,19 +91,32 @@ namespace BatailleNavale.Controller
             throw new NotImplementedException();
         }
 
-        public void PlayerHit(Vector2 pos, out Player winner)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ProcessPlayerHit(Vector2 pos)
-        {
-            throw new NotImplementedException();
-        }
-
         public void QuitGame(GameResult result)
         {
-            throw new NotImplementedException();
+            DurationSW.Stop();
+
+            if (result != GameResult.Interupted) {
+
+                GameData game = new GameData
+                {
+                    GameMode = GameMode,
+                    Result = result,
+
+                    LocalPlayerBoats = PlayerGrid.Boats,
+                    EnemyBoats = EnemyGrid.Boats,
+                    LocalPlayerHits = PlayerGrid.Hits,
+                    EnemyHits = EnemyGrid.Hits,
+
+                    Chat = GameView.ChatContentTB.Text,
+                    Duration = DurationSW.Elapsed
+                };
+
+                MainMenuController.RegisterGame(game);
+            }
+
+            MainMenuController.SetInGame(false);
+            MainMenuController.MainMenuView.Activate();
+            GameView.Close();
         }
     }
 }

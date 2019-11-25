@@ -31,6 +31,7 @@ namespace BatailleNavale.View
 
             UsernameTB.Text = controller.UserDataModel.Username;
             HostPortTB.Text = Convert.ToString(controller.UserDataModel.Port);
+            EnableUPnPCB.IsChecked = controller.UserDataModel.UseUPnP;
         }
         
         private void SaveSettingsBtn_Click(object sender, RoutedEventArgs e)

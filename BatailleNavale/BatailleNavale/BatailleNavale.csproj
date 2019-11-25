@@ -87,11 +87,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controller\IGameController.cs" />
-    <Compile Include="MatchMaker.cs" />
+    <Compile Include="NetworkCommunicator.cs" />
     <Compile Include="Controller\MultiplayerClientGameController.cs" />
     <Compile Include="Controller\MultiplayerHostGameController.cs" />
     <Compile Include="Model\UserDataModel.cs" />
     <Compile Include="UserDataLoader.cs" />
+    <Compile Include="View\MultiplayerView.xaml.cs">
+      <DependentUpon>MultiplayerView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
@@ -113,6 +116,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\MultiplayerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
