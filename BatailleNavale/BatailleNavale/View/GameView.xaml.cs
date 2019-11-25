@@ -270,7 +270,10 @@ namespace BatailleNavale.View
 
         public void WriteInChat(string content, string username = "System")
         {
-            ChatContentTB.Text += $"[{DateTime.Now.Hour}:{DateTime.Now.Minute}] {username}: {content}" + Environment.NewLine;
+            ChatContentTB.Dispatcher.Invoke(() =>
+            {
+                ChatContentTB.Text += $"[{DateTime.Now.Hour}:{DateTime.Now.Minute}] {username}: {content}" + Environment.NewLine;
+            });
         }
 
         public struct UIBoat

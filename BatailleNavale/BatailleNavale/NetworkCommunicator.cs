@@ -34,23 +34,25 @@ namespace BatailleNavale.Net
         public NetworkPlayer RemotePlayer { get; set; }
 
 
-        public event PlayerJoined PlayerJoinedEvent;
-        public event PlayerLeft PlayerLeftEvent;
-        public event PlayerReady PlayerReadyEvent;
-        public event GameReady GameReadyEvent;
-        public event GameEnded GameEndedEvent;
-        public event ChatMessageReceived ChatMessageReceivedEvent;
-        public event EnemyHit EnemyHitEvent;
-        public event IllegalHit IllegalHitEvent;
+        public event PlayerJoinedDelegate PlayerJoinedEvent;
+        public event PlayerLeftDelegate PlayerLeftEvent;
+        public event PlayerReadyDelegate PlayerReadyEvent;
+        public event ConnectedDelegate ConnectedEvent;
+        public event GameReadyDelegate GameReadyEvent;
+        public event GameEndedDelegate GameEndedEvent;
+        public event ChatMessageReceivedDelegate ChatMessageReceivedEvent;
+        public event EnemyHitDelegate EnemyHitEvent;
+        public event IllegalHitDelegate IllegalHitEvent;
 
-        public delegate void PlayerJoined();
-        public delegate void PlayerLeft();
-        public delegate void PlayerReady();
-        public delegate void GameReady();
-        public delegate void GameEnded(MessagesData.GameEndedData data);
-        public delegate void ChatMessageReceived(string content);
-        public delegate void EnemyHit(Hit hit);
-        public delegate void IllegalHit(Hit hit);
+        public delegate void PlayerJoinedDelegate();
+        public delegate void PlayerLeftDelegate();
+        public delegate void PlayerReadyDelegate(List<BoatModel> boats);
+        public delegate void GameReadyDelegate();
+        public delegate void ConnectedDelegate();
+        public delegate void GameEndedDelegate(MessagesData.GameEndedData data);
+        public delegate void ChatMessageReceivedDelegate(string content);
+        public delegate void EnemyHitDelegate(Hit hit);
+        public delegate void IllegalHitDelegate(Hit hit);
 
         
 
@@ -88,7 +90,7 @@ namespace BatailleNavale.Net
             };
 
             await RemotePlayer.Socket.ConnectAsync(endpoint);
-            RemotePlayer.ReceiveTask = Task.Run(Listen);
+            RemotePlayer.ReceiveTask = Task.Run(Receive);
 
             NetworkMessage message = new NetworkMessage(NetworkMessage.MessageType.Connect, userData);
             await SendAsync(message);
@@ -98,22 +100,29 @@ namespace BatailleNavale.Net
         {
             NetworkMessage message = JsonConvert.DeserializeObject<NetworkMessage>(data);
 
-            if ((string)message.Value == JoinPassword) {
+            RemotePlayer.Authentified = true;
+
+            RemotePlayer.PlayerData = JsonConvert.DeserializeObject<SimpleUserDataModel>(message.Value);
+
+            PlayerJoinedEvent();
+
+            NetworkMessage message2 = new NetworkMessage(NetworkMessage.MessageType.ConnectAccepted);
+            Send(message2);
+
+            /*if (JsonConvert.DeserializeObject<string>(message.Value) == JoinPassword) {
                 RemotePlayer.Authentified = true;
                 
                 PlayerJoinedEvent();
-            }
+            }*/
         }
 
         private void NetworkCommunicator_DataReceivedEvent(NetworkMessage data)
         {
             object value = JsonConvert.DeserializeObject(data.Value);
-
+            Console.WriteLine("abc");
             switch (data.Type) {
                 case NetworkMessage.MessageType.Connect:
-                    RemotePlayer.PlayerData = value as SimpleUserDataModel;
-
-                    PlayerJoinedEvent();
+                    
                     break;
                 case NetworkMessage.MessageType.Disconnect:
                     PlayerLeftEvent();
@@ -129,16 +138,19 @@ namespace BatailleNavale.Net
                     GameEndedEvent(gameEnded);
                     break;
                 case NetworkMessage.MessageType.PlayerReady:
-                    PlayerReadyEvent();
+                    PlayerReadyEvent((List<BoatModel>)value);
                     break;
                 case NetworkMessage.MessageType.ChatMessage:
-                    ChatMessageReceivedEvent((string)data.Value);
+                    ChatMessageReceivedEvent(JsonConvert.DeserializeObject<string>(data.Value));
                     break;
                 case NetworkMessage.MessageType.PlayerHit:
                     EnemyHitEvent((Hit)value);
                     break;
                 case NetworkMessage.MessageType.IllegalHit:
                     IllegalHitEvent((Hit)value);
+                    break;
+                case NetworkMessage.MessageType.ConnectAccepted:
+                    ConnectedEvent();
                     break;
                 default:
                     break;
@@ -176,9 +188,9 @@ namespace BatailleNavale.Net
             }
         }
 
-        public void SetPlayerReady()
+        public void SetPlayerReady(List<BoatModel> boats)
         {
-            NetworkMessage message = new NetworkMessage(NetworkMessage.MessageType.PlayerReady, null);
+            NetworkMessage message = new NetworkMessage(NetworkMessage.MessageType.PlayerReady, boats);
         }
 
         public void Hit(Hit hit)
@@ -358,6 +370,9 @@ namespace BatailleNavale.Net
         {
             /// <summary>Remote player connected / Send a connect request</summary>
             Connect,
+
+            /// <summary>Connect request accepted.</summary>
+            ConnectAccepted,
             /// <summary>Remote player disconnected / Send a disconnect request</summary>
             Disconnect,
             /// <summary>Heartbeat</summary>
